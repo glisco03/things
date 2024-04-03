@@ -50,8 +50,8 @@ public class RecallPotionItem extends Item {
     @Override
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
         var player = user instanceof PlayerEntity ? (PlayerEntity) user : null;
+        if (player == null) return stack;
 
-        if (player == null) return new ItemStack(Items.GLASS_BOTTLE);
         if (player instanceof ServerPlayerEntity serverPlayer) {
 
             ServerWorld spawnWorld = serverPlayer.getServer().getWorld(serverPlayer.getSpawnPointDimension());
@@ -62,20 +62,20 @@ public class RecallPotionItem extends Item {
                 Optional<Vec3d> posOptional = PlayerEntity.findRespawnPosition(spawnWorld, serverPlayer.getSpawnPointPosition(), serverPlayer.getSpawnAngle(), true, false);
                 if (posOptional.isPresent()) {
                     WorldOps.teleportToWorld(serverPlayer, spawnWorld, posOptional.get());
+
+                    if (!player.getAbilities().creativeMode) {
+                        stack.decrement(1);
+                        if (stack.isEmpty()) {
+                            stack = new ItemStack(Items.GLASS_BOTTLE);
+                        } else {
+                            player.getInventory().offerOrDrop(new ItemStack(Items.GLASS_BOTTLE));
+                        }
+                    }
                 } else {
                     serverPlayer.sendMessage(Text.literal("No respawn point"), true);
                 }
             } else {
                 serverPlayer.sendMessage(Text.literal("No respawn point"), true);
-            }
-        }
-
-        if (!player.getAbilities().creativeMode) {
-            stack.decrement(1);
-            if (stack.isEmpty()) {
-                return new ItemStack(Items.GLASS_BOTTLE);
-            } else {
-                player.getInventory().offerOrDrop(new ItemStack(Items.GLASS_BOTTLE));
             }
         }
 
