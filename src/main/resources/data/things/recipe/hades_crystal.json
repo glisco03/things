@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "mgm",
+    "cmc",
+    "mgm"
+  ],
+  "key": {
+    "m": {
+      "item": "minecraft:magma_block"
+    },
+    "c": {
+      "item": "minecraft:magma_cream"
+    },
+    "g": {
+      "item": "things:gleaming_compound"
+    }
+  },
+  "result": {
+    "id": "things:hades_crystal"
+  }
+}

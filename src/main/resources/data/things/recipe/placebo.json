@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#ND",
+    "GBX",
+    "DMP"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:sugar"
+    },
+    "N": {
+      "item": "minecraft:nether_wart"
+    },
+    "D": {
+      "item": "things:gleaming_powder"
+    },
+    "G": {
+      "item": "minecraft:glistering_melon_slice"
+    },
+    "B": {
+      "item": "minecraft:bone_meal"
+    },
+    "X": {
+      "item": "minecraft:ghast_tear"
+    },
+    "M": {
+      "item": "minecraft:magma_cream"
+    },
+    "P": {
+      "item": "minecraft:phantom_membrane"
+    }
+  },
+  "result": {
+    "id": "things:placebo",
+    "count": 1
+  }
+}

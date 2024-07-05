@@ -1,0 +1,29 @@
+{
+    "parent": "things:agglomerate_apple",
+    "display": {
+        "icon": {
+            "id": "things:agglomeration"
+        },
+        "title": {
+            "translate": "advancement.things.eat_agglomerated_apple.title"
+        },
+        "description": {
+            "translate": "advancement.things.eat_agglomerated_apple.description"
+        },
+        "frame": "challenge",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": true
+    },
+    "criteria": {
+        "has_agglomeration": {
+            "trigger": "things:an_amazingly_expensive_mistake",
+            "conditions": {}
+        }
+    },
+    "requirements": [
+        [
+            "has_agglomeration"
+        ]
+    ]
+}

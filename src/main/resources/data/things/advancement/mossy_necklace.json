@@ -1,0 +1,37 @@
+{
+  "parent": "things:gleaming_compound",
+  "display": {
+    "icon": {
+      "id": "things:moss_necklace"
+    },
+    "title": {
+      "translate": "advancement.things.moss_necklace.title"
+    },
+    "description": {
+      "translate": "advancement.things.moss_necklace.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "moss_necklace": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "things:moss_necklace"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "moss_necklace"
+    ]
+  ]
+}

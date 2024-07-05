@@ -26,7 +26,8 @@ public class InfernalScepterItem extends ItemWithExtendableTooltip {
 
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        if (!user.getInventory().containsAny(Collections.singleton(Items.FIRE_CHARGE))) return TypedActionResult.fail(user.getStackInHand(hand));
+        if (!user.getInventory().containsAny(Collections.singleton(Items.FIRE_CHARGE)))
+            return TypedActionResult.fail(user.getStackInHand(hand));
         user.setCurrentHand(hand);
         return TypedActionResult.success(user.getStackInHand(hand));
     }
@@ -50,14 +51,12 @@ public class InfernalScepterItem extends ItemWithExtendableTooltip {
             double vY = (player.getY() + vec3d.y * 4.0D) - player.getY();
             double vZ = (player.getZ() + vec3d.z * 4.0D) - player.getZ();
 
-            FireballEntity fireball = new FireballEntity(world, user, vX, vY, vZ, 3);
+            FireballEntity fireball = new FireballEntity(world, user, new Vec3d(vX, vY, vZ), 3);
             fireball.updatePosition(player.getX() + vec3d.x * 2.0D, player.getEyeY() - 1, player.getZ() + vec3d.z * 2.0D);
             world.spawnEntity(fireball);
             world.playSound(null, user.getX(), user.getY(), user.getZ(), SoundEvents.ENTITY_GHAST_SHOOT, SoundCategory.PLAYERS, 1, 1);
 
-            stack.damage(1, user, (p) -> {
-                user.sendToolBreakStatus(user.getActiveHand());
-            });
+            stack.damage(1, user, LivingEntity.getSlotForHand(user.getActiveHand()));
         }
 
         for (int slot = 0; slot < inventory.size(); slot++) {
@@ -71,7 +70,7 @@ public class InfernalScepterItem extends ItemWithExtendableTooltip {
     }
 
     @Override
-    public int getMaxUseTime(ItemStack stack) {
+    public int getMaxUseTime(ItemStack stack, LivingEntity user) {
         return 72000;
     }
 }

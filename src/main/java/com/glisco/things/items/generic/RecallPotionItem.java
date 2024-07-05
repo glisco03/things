@@ -2,7 +2,6 @@ package com.glisco.things.items.generic;
 
 import com.glisco.things.Things;
 import io.wispforest.owo.itemgroup.OwoItemSettings;
-import io.wispforest.owo.ops.WorldOps;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -11,15 +10,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsage;
 import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.UseAction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
-
-import java.util.Optional;
 
 public class RecallPotionItem extends Item {
 
@@ -28,7 +24,7 @@ public class RecallPotionItem extends Item {
     }
 
     @Override
-    public int getMaxUseTime(ItemStack stack) {
+    public int getMaxUseTime(ItemStack stack, LivingEntity user) {
         return 15;
     }
 
@@ -54,25 +50,19 @@ public class RecallPotionItem extends Item {
 
         if (player instanceof ServerPlayerEntity serverPlayer) {
 
-            ServerWorld spawnWorld = serverPlayer.getServer().getWorld(serverPlayer.getSpawnPointDimension());
-
             Criteria.CONSUME_ITEM.trigger(serverPlayer, stack);
 
             if (serverPlayer.getSpawnPointPosition() != null) {
-                Optional<Vec3d> posOptional = PlayerEntity.findRespawnPosition(spawnWorld, serverPlayer.getSpawnPointPosition(), serverPlayer.getSpawnAngle(), true, false);
-                if (posOptional.isPresent()) {
-                    WorldOps.teleportToWorld(serverPlayer, spawnWorld, posOptional.get());
+                var respawnPos = ((ServerPlayerEntity) player).getRespawnTarget(false, TeleportTarget.NO_OP);
+                player.teleportTo(respawnPos);
 
-                    if (!player.getAbilities().creativeMode) {
-                        stack.decrement(1);
-                        if (stack.isEmpty()) {
-                            stack = new ItemStack(Items.GLASS_BOTTLE);
-                        } else {
-                            player.getInventory().offerOrDrop(new ItemStack(Items.GLASS_BOTTLE));
-                        }
+                if (!player.getAbilities().creativeMode) {
+                    stack.decrement(1);
+                    if (stack.isEmpty()) {
+                        stack = new ItemStack(Items.GLASS_BOTTLE);
+                    } else {
+                        player.getInventory().offerOrDrop(new ItemStack(Items.GLASS_BOTTLE));
                     }
-                } else {
-                    serverPlayer.sendMessage(Text.literal("No respawn point"), true);
                 }
             } else {
                 serverPlayer.sendMessage(Text.literal("No respawn point"), true);

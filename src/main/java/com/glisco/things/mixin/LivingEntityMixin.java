@@ -4,14 +4,15 @@ import com.glisco.things.Things;
 import com.glisco.things.items.ThingsItems;
 import com.glisco.things.misc.ExtendedStatusEffectInstance;
 import dev.emi.trinkets.api.TrinketsApi;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,8 +34,8 @@ public abstract class LivingEntityMixin extends Entity {
 
         LivingEntity user = (LivingEntity) (Object) this;
 
-        if (!Things.isShield(user.getActiveItem().getItem())) return;
-        if (!EnchantmentHelper.fromNbt(user.getActiveItem().getEnchantments()).containsKey(Things.RETRIBUTION)) return;
+        if (!user.getActiveItem().isIn(Things.ENCHANTABLE_WITH_RETRIBUTION)) return;
+        if (user.getActiveItem().getEnchantments().getLevel(getWorld().getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(Things.RETRIBUTION).get()) < 1) return;
         user.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 40, 0));
     }
 
@@ -45,13 +46,12 @@ public abstract class LivingEntityMixin extends Entity {
 
         LivingEntity user = (LivingEntity) (Object) this;
 
-        if (!Things.isShield(user.getActiveItem().getItem())) return;
-        if (!EnchantmentHelper.fromNbt(user.getActiveItem().getEnchantments()).containsKey(Things.RETRIBUTION)) return;
+        if (!user.getActiveItem().isIn(Things.ENCHANTABLE_WITH_RETRIBUTION)) return;
+        if (user.getActiveItem().getEnchantments().getLevel(getWorld().getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(Things.RETRIBUTION).get()) < 1) return;
         user.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 40, 0));
     }
 
-    @SuppressWarnings("InvalidInjectorMethodSignature")
-    @ModifyVariable(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;hasStatusEffect(Lnet/minecraft/entity/effect/StatusEffect;)Z", ordinal = 1), ordinal = 1)
+    @ModifyVariable(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;hasStatusEffect(Lnet/minecraft/registry/entry/RegistryEntry;)Z", ordinal = 1), ordinal = 1)
     public float waxGlandWater(float j) {
         LivingEntity entity = (LivingEntity) (Object) this;
         if (!(entity instanceof PlayerEntity player)) return j;
@@ -67,7 +67,7 @@ public abstract class LivingEntityMixin extends Entity {
         if (!(entity instanceof PlayerEntity player)) return speed;
 
         if (TrinketsApi.getTrinketComponent(player).get().isEquipped(ThingsItems.ENCHANTED_WAX_GLAND) && TrinketsApi.getTrinketComponent(player).get().isEquipped(ThingsItems.HADES_CRYSTAL)) {
-            int depthStrider = EnchantmentHelper.getDepthStrider(player);
+            float depthStrider = (float) (player.getAttributeValue(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY) * 3);
             return 0.0175f * Things.CONFIG.waxGlandMultiplier() + 0.1f * depthStrider;
         }
 

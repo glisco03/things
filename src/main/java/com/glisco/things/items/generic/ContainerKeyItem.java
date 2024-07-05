@@ -4,20 +4,23 @@ import com.glisco.things.Things;
 import com.glisco.things.items.ItemWithExtendableTooltip;
 import com.glisco.things.mixin.access.ContainerLockAccessor;
 import com.glisco.things.mixin.access.LockableContainerBlockEntityAccessor;
+import com.mojang.serialization.Codec;
 import io.wispforest.owo.itemgroup.OwoItemSettings;
-import io.wispforest.owo.serialization.Endec;
-import io.wispforest.owo.serialization.endec.KeyedEndec;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.block.enums.ChestType;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.component.ComponentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.ContainerLock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.text.MutableText;
@@ -32,7 +35,14 @@ import java.util.List;
 
 public class ContainerKeyItem extends ItemWithExtendableTooltip {
 
-    private static final KeyedEndec<Integer> LOCK_KEY = Endec.INT.keyed("Lock", 0);
+    public static final ComponentType<Integer> LOCK = Registry.register(
+            Registries.DATA_COMPONENT_TYPE,
+            Things.id("container_key_lock"),
+            ComponentType.<Integer>builder()
+                    .codec(Codec.INT)
+                    .packetCodec(PacketCodecs.VAR_INT)
+                    .build()
+    );
 
     public ContainerKeyItem() {
         super(new OwoItemSettings().group(Things.THINGS_GROUP).maxCount(1));
@@ -54,14 +64,14 @@ public class ContainerKeyItem extends ItemWithExtendableTooltip {
         String existingLock = getExistingLock(world, pos);
 
         if (existingLock.isEmpty()) {
-            setLock((LockableContainerBlockEntity) world.getBlockEntity(pos), String.valueOf(stack.get(LOCK_KEY)));
+            setLock((LockableContainerBlockEntity) world.getBlockEntity(pos), String.valueOf(stack.get(LOCK)));
 
             if (world.isClient) {
                 sendLockedState(context, true);
             }
 
             return ActionResult.SUCCESS;
-        } else if (existingLock.equals(String.valueOf(stack.get(LOCK_KEY)))) {
+        } else if (existingLock.equals(String.valueOf(stack.get(LOCK)))) {
             setLock((LockableContainerBlockEntity) world.getBlockEntity(pos), "");
 
             if (world.isClient) {
@@ -89,17 +99,17 @@ public class ContainerKeyItem extends ItemWithExtendableTooltip {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        if (stack.has(LOCK_KEY)) {
-            tooltip.add(Text.literal("§9Key: §7#" + Integer.toHexString(stack.get(LOCK_KEY))));
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+        if (stack.contains(LOCK)) {
+            tooltip.add(Text.literal("§9Key: §7#" + Integer.toHexString(stack.get(LOCK))));
         }
 
-        super.appendTooltip(stack, world, tooltip, context);
+        super.appendTooltip(stack, context, tooltip, type);
     }
 
     private static void createKey(ItemStack stack, Random random) {
-        if (stack.has(LOCK_KEY)) return;
-        stack.put(LOCK_KEY, random.nextInt(200000));
+        if (stack.contains(LOCK)) return;
+        stack.set(LOCK, random.nextInt(200000));
     }
 
     private static String getExistingLock(World world, BlockPos pos) {
@@ -137,7 +147,7 @@ public class ContainerKeyItem extends ItemWithExtendableTooltip {
     }
 
     private static String getKey(BlockEntity be) {
-        return ((ContainerLockAccessor) ((LockableContainerBlockEntityAccessor) be).things$getLock()).things$getKey();
+        return ((ContainerLockAccessor) (Object) ((LockableContainerBlockEntityAccessor) be).things$getLock()).things$getKey();
     }
 
     @SuppressWarnings("ConstantConditions")

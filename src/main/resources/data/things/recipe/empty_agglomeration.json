@@ -1,0 +1,27 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "things:agglomeration_enabled"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SCS",
+    "CNC",
+    "SCS"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:slime_ball"
+    },
+    "N": {
+      "item": "minecraft:netherite_block"
+    },
+    "C": {
+      "item": "things:gleaming_compound"
+    }
+  },
+  "result": {
+    "id": "things:empty_agglomeration"
+  }
+}

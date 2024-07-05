@@ -7,6 +7,7 @@ import io.wispforest.owo.itemgroup.OwoItemSettings;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 public class MiningGlovesItem extends TrinketItemWithOptionalTooltip {
@@ -19,7 +20,7 @@ public class MiningGlovesItem extends TrinketItemWithOptionalTooltip {
     public void tick(ItemStack stack, SlotReference slot, LivingEntity entity) {
         if (!(entity instanceof ServerPlayerEntity player)) return;
 
-        player.addStatusEffect(new StatusEffectInstance(Things.MOMENTUM, 5,
+        player.addStatusEffect(new StatusEffectInstance(Registries.STATUS_EFFECT.getEntry(Things.MOMENTUM), 5,
                 Things.CONFIG.effectLevels.miningGloveMomentum() - 1, true, false, true));
     }
 }

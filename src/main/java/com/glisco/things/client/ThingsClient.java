@@ -52,8 +52,8 @@ public class ThingsClient implements ClientModInitializer {
 
         HandledScreens.register(Things.DISPLACEMENT_TOME_SCREEN_HANDLER, DisplacementTomeScreen::new);
 
-        ModelPredicateProviderRegistry.register(ThingsItems.DISPLACEMENT_TOME, new Identifier("pages"), new DisplacementTomeItem.PredicateProvider());
-        ModelPredicateProviderRegistry.register(ThingsItems.SOCKS, new Identifier("jumpy"), (stack, world, entity, seed) -> stack.get(SocksItem.JUMPY_KEY) ? 1 : 0);
+        ModelPredicateProviderRegistry.register(ThingsItems.DISPLACEMENT_TOME, Identifier.of("pages"), new DisplacementTomeItem.PredicateProvider());
+        ModelPredicateProviderRegistry.register(ThingsItems.SOCKS, Identifier.of("jumpy"), (stack, world, entity, seed) -> stack.contains(SocksItem.JUMPY_AND_ENABLED) ? 1 : 0);
 
         TrinketRendererRegistry.registerRenderer(Items.APPLE, new AppleTrinket.Renderer());
 
@@ -63,7 +63,8 @@ public class ThingsClient implements ClientModInitializer {
         registerRenderedTrinket(ThingsItems.LUCK_OF_THE_IRISH);
         registerRenderedTrinket(ThingsItems.MONOCLE);
         registerRenderedTrinket(ThingsItems.MOSS_NECKLACE);
-        registerRenderedTrinket(ThingsItems.AGGLOMERATION);
+        // TODO agglomeration rendering
+//        registerRenderedTrinket(ThingsItems.AGGLOMERATION);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (PLACE_ITEM.wasPressed()) {
@@ -82,33 +83,34 @@ public class ThingsClient implements ClientModInitializer {
             }
         });
 
-        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-            if (!(screen instanceof HandledScreen) || !Things.CONFIG.enableAgglomerationInvScrollSelection()) return;
-
-            ScreenMouseEvents.allowMouseScroll(screen).register((screen1, mouseX, mouseY, horizontalAmount, verticalAmount) -> {
-                var slot = ((HandledScreenAccessor) screen1).thing$getSlotAt(mouseX, mouseY);
-
-                if (slot == null) return true;
-
-                var slotStack = slot.getStack();
-                int slotId = slot.id;
-
-                //This is required due to Screen Handler Mismatch for hotbar items with a given Itemgroup open in Creative Mode
-                boolean fromPlayerInv = screen1 instanceof CreativeInventoryScreen && slot.inventory instanceof PlayerInventory && slot.getIndex() < 9;
-
-                if (slot instanceof CreativeSlotAccessor creativeSlot) {
-                    slotId = creativeSlot.things$getSlot().id;
-                }
-
-                if (slotStack.getItem() instanceof AgglomerationItem && slotStack.has(AgglomerationItem.ITEMS_KEY)) {
-                    ThingsNetwork.CHANNEL.clientHandle().send(new AgglomerationItem.ScrollStackFromSlotTrinket(fromPlayerInv, fromPlayerInv ? slot.getIndex() : slotId));
-
-                    return false;
-                }
-
-                return true;
-            });
-        });
+        // TODO agglomeration networking
+//        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+//            if (!(screen instanceof HandledScreen) || !Things.CONFIG.enableAgglomerationInvScrollSelection()) return;
+//
+//            ScreenMouseEvents.allowMouseScroll(screen).register((screen1, mouseX, mouseY, horizontalAmount, verticalAmount) -> {
+//                var slot = ((HandledScreenAccessor) screen1).thing$getSlotAt(mouseX, mouseY);
+//
+//                if (slot == null) return true;
+//
+//                var slotStack = slot.getStack();
+//                int slotId = slot.id;
+//
+//                //This is required due to Screen Handler Mismatch for hotbar items with a given Itemgroup open in Creative Mode
+//                boolean fromPlayerInv = screen1 instanceof CreativeInventoryScreen && slot.inventory instanceof PlayerInventory && slot.getIndex() < 9;
+//
+//                if (slot instanceof CreativeSlotAccessor creativeSlot) {
+//                    slotId = creativeSlot.things$getSlot().id;
+//                }
+//
+//                if (slotStack.getItem() instanceof AgglomerationItem && slotStack.has(AgglomerationItem.ITEMS_KEY)) {
+//                    ThingsNetwork.CHANNEL.clientHandle().send(new AgglomerationItem.ScrollStackFromSlotTrinket(fromPlayerInv, fromPlayerInv ? slot.getIndex() : slotId));
+//
+//                    return false;
+//                }
+//
+//                return true;
+//            });
+//        });
     }
 
     private static String keybindId(String name) {

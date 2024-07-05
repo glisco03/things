@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "nin",
+    "iDi",
+    "iOi"
+  ],
+  "key": {
+    "n": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "D": {
+      "item": "things:gleaming_compound"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "result": {
+    "id": "things:riot_gauntlet",
+    "count": 1
+  }
+}

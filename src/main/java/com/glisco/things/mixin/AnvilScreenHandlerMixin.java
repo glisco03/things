@@ -3,6 +3,8 @@ package com.glisco.things.mixin;
 import com.glisco.things.Things;
 import com.glisco.things.items.ThingsItems;
 import com.glisco.things.mixin.access.ForgingScreenHandlerAccessor;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.UnbreakableComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.AnvilScreenHandler;
@@ -46,16 +48,16 @@ public class AnvilScreenHandlerMixin {
 
         final var baseStack = inputInventory.getStack(0);
 
-        if (baseStack.getItem().getMaxDamage() == 0 || baseStack.isIn(Things.HARDENING_CATALYST_BLACKLIST)) return;
-        if (baseStack.getOrCreateNbt().getByte("Unbreakable") == (byte) 1) return;
+        if (!baseStack.getItem().getComponents().contains(DataComponentTypes.MAX_DAMAGE) || baseStack.isIn(Things.HARDENING_CATALYST_BLACKLIST)) return;
+        if (baseStack.contains(DataComponentTypes.UNBREAKABLE)) return;
 
         ItemStack newOutput = baseStack.copy();
-        newOutput.getOrCreateNbt().putByte("Unbreakable", (byte) 1);
+        newOutput.set(DataComponentTypes.UNBREAKABLE, new UnbreakableComponent(true));
 
         if (!StringUtils.isBlank(newItemName)) {
-            newOutput.setCustomName(Text.literal(newItemName));
+            newOutput.set(DataComponentTypes.CUSTOM_NAME, Text.literal(newItemName));
         } else {
-            newOutput.removeCustomName();
+            newOutput.remove(DataComponentTypes.CUSTOM_DATA);
         }
 
         forgingHandler.things$getOutput().setStack(0, newOutput);

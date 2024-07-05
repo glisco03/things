@@ -1,0 +1,37 @@
+{
+  "parent": "things:gleaming_powder",
+  "display": {
+    "icon": {
+      "id": "things:placebo"
+    },
+    "title": {
+      "translate": "advancement.things.placebo.title"
+    },
+    "description": {
+      "translate": "advancement.things.placebo.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "placebo": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "things:placebo"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "placebo"
+    ]
+  ]
+}

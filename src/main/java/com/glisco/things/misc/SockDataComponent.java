@@ -1,8 +1,6 @@
 package com.glisco.things.misc;
 
 import com.glisco.things.Things;
-import dev.onyxstudios.cca.api.v3.component.Component;
-import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -11,7 +9,11 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
+import org.ladysnake.cca.api.v3.component.Component;
+import org.ladysnake.cca.api.v3.component.tick.ServerTickingComponent;
 
 public class SockDataComponent implements Component, ServerTickingComponent {
 
@@ -59,7 +61,7 @@ public class SockDataComponent implements Component, ServerTickingComponent {
     }
 
     @Override
-    public void readFromNbt(NbtCompound tag) {
+    public void readFromNbt(NbtCompound tag, RegistryWrapper.@NotNull WrapperLookup registries) {
         this.speedModification = tag.getFloat("SpeedModification");
 
         this.sockSpeeds.clear();
@@ -70,7 +72,7 @@ public class SockDataComponent implements Component, ServerTickingComponent {
     }
 
     @Override
-    public void writeToNbt(NbtCompound tag) {
+    public void writeToNbt(NbtCompound tag, RegistryWrapper.@NotNull WrapperLookup registries) {
         tag.putFloat("SpeedModification", speedModification);
 
         var list = new NbtList();

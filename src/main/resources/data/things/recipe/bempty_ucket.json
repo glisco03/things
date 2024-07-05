@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "b b",
+    " b "
+  ],
+  "key": {
+    "b": {
+      "item": "minecraft:bucket"
+    }
+  },
+  "result": {
+    "id": "things:bempty_ucket"
+  }
+}

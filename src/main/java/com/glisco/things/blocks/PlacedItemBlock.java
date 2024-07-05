@@ -75,7 +75,7 @@ public class PlacedItemBlock extends BlockWithEntity {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         PlacedItemBlockEntity entity = (PlacedItemBlockEntity) world.getBlockEntity(pos);
         entity.changeRotation(!player.isSneaking());
         return ActionResult.SUCCESS;

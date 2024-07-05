@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " gF",
+    "n/g",
+    "in "
+  ],
+  "key": {
+    "g": {
+      "item": "minecraft:gold_ingot"
+    },
+    "F": {
+      "item": "minecraft:lava_bucket"
+    },
+    "n": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "/": {
+      "item": "minecraft:blaze_rod"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "id": "things:infernal_scepter",
+    "count": 1
+  }
+}

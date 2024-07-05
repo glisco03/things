@@ -1,0 +1,38 @@
+{
+    "parent": "things:empty_agglomeration",
+    "display": {
+        "icon": {
+            "id": "minecraft:apple"
+        },
+        "title": {
+            "translate": "advancement.things.agglomerate_apple.title"
+        },
+        "description": {
+            "translate": "advancement.things.agglomerate_apple.description"
+        },
+        "frame": "task",
+        "show_toast": true,
+        "announce_to_chat": true,
+        "hidden": false
+    },
+    "criteria": {
+        "has_agglomeration": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "items":[
+                            "things:agglomeration"
+                        ],
+                        "nbt": "{Items: [{id: \"minecraft:apple\"}]}"
+                    }
+                ]
+            }
+        }
+    },
+    "requirements": [
+        [
+            "has_agglomeration"
+        ]
+    ]
+}

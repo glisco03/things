@@ -1,0 +1,37 @@
+{
+  "parent": "things:root",
+  "display": {
+    "icon": {
+      "id": "things:bater_wucket"
+    },
+    "title": {
+      "translate": "advancement.things.bater_wucket.title"
+    },
+    "description": {
+      "translate": "advancement.things.bater_wucket.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "bater_wucket": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "things:bater_wucket"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "bater_wucket"
+    ]
+  ]
+}

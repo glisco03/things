@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "lnl",
+    "lll",
+    "lcl"
+  ],
+  "key": {
+    "n": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "l": {
+      "item": "minecraft:leather"
+    },
+    "c": {
+      "item": "things:gleaming_compound"
+    }
+  },
+  "result": {
+    "id": "things:mining_gloves"
+  }
+}

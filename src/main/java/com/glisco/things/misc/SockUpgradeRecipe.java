@@ -2,18 +2,17 @@ package com.glisco.things.misc;
 
 import com.glisco.things.items.ThingsItems;
 import com.glisco.things.items.trinkets.SocksItem;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.RecipeInputInventory;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.SpecialCraftingRecipe;
 import net.minecraft.recipe.SpecialRecipeSerializer;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.recipe.input.CraftingRecipeInput;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.World;
 
 import java.util.function.Predicate;
@@ -25,19 +24,19 @@ public class SockUpgradeRecipe extends SpecialCraftingRecipe {
     }
 
     @Override
-    public boolean matches(RecipeInputInventory inventory, World world) {
-        if (!matchOnce(inventory, stack -> stack.isOf(ThingsItems.GLEAMING_POWDER))) return false;
-        if (!matchOnce(inventory, stack -> PotionUtil.getPotion(stack) == Potions.STRONG_SWIFTNESS)) return false;
+    public boolean matches(CraftingRecipeInput input, World world) {
+        if (!matchOnce(input, stack -> stack.isOf(ThingsItems.GLEAMING_POWDER))) return false;
+        if (!matchOnce(input, stack -> stack.getOrDefault(DataComponentTypes.POTION_CONTENTS, PotionContentsComponent.DEFAULT).matches(Potions.STRONG_SWIFTNESS))) return false;
 
-        return matchOnce(inventory, stack -> stack.isOf(ThingsItems.SOCKS) && stack.get(SocksItem.SPEED_KEY) < 2);
+        return matchOnce(input, stack -> stack.isOf(ThingsItems.SOCKS) && stack.getOrDefault(SocksItem.SPEED, 1) < 2);
     }
 
     @Override
-    public ItemStack craft(RecipeInputInventory inventory, DynamicRegistryManager drm) {
+    public ItemStack craft(CraftingRecipeInput input, RegistryWrapper.WrapperLookup lookup) {
         ItemStack socc = null;
 
-        for (int i = 0; i < inventory.size(); i++) {
-            final var stack = inventory.getStack(i);
+        for (int i = 0; i < input.getSize(); i++) {
+            final var stack = input.getStackInSlot(i);
             if (!stack.isOf(ThingsItems.SOCKS)) continue;
 
             socc = stack.copy();
@@ -45,18 +44,16 @@ public class SockUpgradeRecipe extends SpecialCraftingRecipe {
         }
 
         if (socc == null) return ItemStack.EMPTY;
-
-        final var soccNbt = socc.getOrCreateNbt();
-        soccNbt.mutate(SocksItem.SPEED_KEY, speed -> speed + 1);
+        socc.apply(SocksItem.SPEED, 0, speed -> speed + 1);
 
         return socc;
     }
 
-    private static boolean matchOnce(RecipeInputInventory inventory, Predicate<ItemStack> condition) {
+    private static boolean matchOnce(CraftingRecipeInput input, Predicate<ItemStack> condition) {
         boolean found = false;
 
-        for (int i = 0; i < inventory.size(); i++) {
-            if (!condition.test(inventory.getStack(i))) continue;
+        for (int i = 0; i < input.getSize(); i++) {
+            if (!condition.test(input.getStackInSlot(i))) continue;
             if (found) return false;
 
             found = true;

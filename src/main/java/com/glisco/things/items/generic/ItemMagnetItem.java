@@ -1,21 +1,23 @@
 package com.glisco.things.items.generic;
 
 import com.glisco.things.Things;
+import com.mojang.serialization.Codec;
 import io.wispforest.owo.itemgroup.OwoItemSettings;
 import io.wispforest.owo.particles.ClientParticles;
-import io.wispforest.owo.serialization.Endec;
-import io.wispforest.owo.serialization.endec.KeyedEndec;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.component.ComponentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundCategory;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
@@ -24,7 +26,6 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.HashSet;
@@ -36,10 +37,17 @@ public class ItemMagnetItem extends Item {
     private static final int USE_COST = 50;
     private static final int MAX_CHARGE = 200;
 
-    private static final KeyedEndec<Integer> CHARGE = Endec.INT.keyed("Charge", MAX_CHARGE);
+    public static final ComponentType<Integer> CHARGE = Registry.register(
+            Registries.DATA_COMPONENT_TYPE,
+            Things.id("item_magnet_charge"),
+            ComponentType.<Integer>builder()
+                    .codec(Codec.INT)
+                    .packetCodec(PacketCodecs.VAR_INT)
+                    .build()
+    );
 
     public ItemMagnetItem() {
-        super(new OwoItemSettings().group(Things.THINGS_GROUP).maxCount(1));
+        super(new OwoItemSettings().group(Things.THINGS_GROUP).maxCount(1).component(CHARGE, MAX_CHARGE));
     }
 
     @Override
@@ -92,21 +100,21 @@ public class ItemMagnetItem extends Item {
             }
         }
 
-        user.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 0.125f, 2);
-        stack.put(CHARGE, stack.get(CHARGE) - USE_COST);
+        user.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, 0.125f, 2);
+        stack.set(CHARGE, stack.get(CHARGE) - USE_COST);
 
         return TypedActionResult.success(stack);
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         tooltip.add(Text.translatable(this.getTranslationKey() + ".tooltip", stack.get(CHARGE)));
     }
 
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         if (stack.get(CHARGE) >= MAX_CHARGE) return;
-        stack.mutate(CHARGE, energy -> Math.min(energy + 1 + energy / 80, MAX_CHARGE));
+        stack.apply(CHARGE, MAX_CHARGE, energy -> Math.min(energy + 1 + energy / 80, MAX_CHARGE));
     }
 
     @Override
@@ -141,7 +149,7 @@ public class ItemMagnetItem extends Item {
     }
 
     @Override
-    public boolean allowNbtUpdateAnimation(PlayerEntity player, Hand hand, ItemStack oldStack, ItemStack newStack) {
+    public boolean allowComponentsUpdateAnimation(PlayerEntity player, Hand hand, ItemStack oldStack, ItemStack newStack) {
         return Objects.equals(oldStack.get(CHARGE), newStack.get(CHARGE));
     }
 }

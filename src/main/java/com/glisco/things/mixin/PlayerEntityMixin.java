@@ -2,6 +2,7 @@ package com.glisco.things.mixin;
 
 import com.glisco.things.items.ThingsItems;
 import dev.emi.trinkets.api.TrinketsApi;
+import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class PlayerEntityMixin {
 
     @Inject(method = "eatFood", at = @At("TAIL"))
-    public void onConsume(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> cir) {
+    public void onConsume(World world, ItemStack stack, FoodComponent foodComponent, CallbackInfoReturnable<ItemStack> cir) {
 
         if (!stack.getItem().equals(Items.POISONOUS_POTATO)) return;
 

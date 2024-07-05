@@ -1,0 +1,37 @@
+{
+  "parent": "things:gleaming_compound",
+  "display": {
+    "icon": {
+      "id": "things:displacement_tome"
+    },
+    "title": {
+      "translate": "advancement.things.displacement_tome.title"
+    },
+    "description": {
+      "translate": "advancement.things.displacement_tome.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "displacement_tome": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "things:displacement_tome"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "displacement_tome"
+    ]
+  ]
+}

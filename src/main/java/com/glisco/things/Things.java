@@ -1,20 +1,14 @@
 package com.glisco.things;
 
-import com.github.crimsondawn45.fabricshieldlib.lib.object.FabricShield;
 import com.glisco.things.blocks.ThingsBlocks;
-import com.glisco.things.enchantments.RetributionEnchantment;
 import com.glisco.things.items.ThingsItems;
 import com.glisco.things.misc.*;
 import com.glisco.things.misc.ThingsConfig;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.brigadier.arguments.FloatArgumentType;
+import com.mojang.serialization.MapCodec;
 import dev.emi.trinkets.api.TrinketComponent;
 import dev.emi.trinkets.api.TrinketsApi;
-import dev.onyxstudios.cca.api.v3.component.ComponentKey;
-import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
-import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry;
-import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer;
-import dev.onyxstudios.cca.api.v3.entity.RespawnCopyStrategy;
 import io.wispforest.owo.Owo;
 import io.wispforest.owo.itemgroup.Icon;
 import io.wispforest.owo.itemgroup.OwoItemGroup;
@@ -27,20 +21,17 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditionType;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.item.ShieldItem;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.*;
 import net.minecraft.registry.tag.BiomeTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.resource.featuretoggle.FeatureFlags;
@@ -48,7 +39,13 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.PlacedFeature;
+import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
+import org.ladysnake.cca.api.v3.component.ComponentKey;
+import org.ladysnake.cca.api.v3.component.ComponentRegistry;
+import org.ladysnake.cca.api.v3.entity.EntityComponentFactoryRegistry;
+import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;
+import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 
 import java.util.Set;
 import java.util.function.Predicate;
@@ -62,8 +59,8 @@ public class Things implements ModInitializer, EntityComponentInitializer {
 
     public static final ThingsConfig CONFIG = ThingsConfig.createAndLoad();
 
-    public static final OwoItemGroup THINGS_GROUP = OwoItemGroup.builder(new Identifier("things", "things"), () -> Icon.of(ThingsItems.BATER_WUCKET)).build();
-    public static final Enchantment RETRIBUTION = new RetributionEnchantment();
+    public static final OwoItemGroup THINGS_GROUP = OwoItemGroup.builder(Identifier.of("things", "things"), () -> Icon.of(ThingsItems.BATER_WUCKET)).build();
+    public static final RegistryKey<Enchantment> RETRIBUTION = RegistryKey.of(RegistryKeys.ENCHANTMENT, id("retribution"));
     public static final StatusEffect MOMENTUM = new MomentumStatusEffect();
 
     public static final AnAmazinglyExpensiveMistakeCriterion AN_AMAZINGLY_EXPENSIVE_MISTAKE_CRITERION = new AnAmazinglyExpensiveMistakeCriterion();
@@ -77,8 +74,8 @@ public class Things implements ModInitializer, EntityComponentInitializer {
     public static final TagKey<Item> HARDENING_CATALYST_BLACKLIST = TagKey.of(RegistryKeys.ITEM, id("hardening_catalyst_blacklist"));
     public static final TagKey<Item> AGGLOMERATION_BLACKLIST = TagKey.of(RegistryKeys.ITEM, id("agglomeration_blacklist"));
     public static final TagKey<Item> DISPLACEMENT_TOME_FUELS = TagKey.of(RegistryKeys.ITEM, id("displacement_tome_fuels"));
+    public static final TagKey<Item> ENCHANTABLE_WITH_RETRIBUTION = TagKey.of(RegistryKeys.ITEM, id("enchantable/retribution"));
 
-    private static Predicate<Item> SHIELD_PREDICATE = item -> item instanceof ShieldItem;
     private static final Set<Item> BROKEN_WATCH_RECIPE = ImmutableSet.of(Items.LEATHER, Items.CLOCK, ThingsItems.GLEAMING_COMPOUND);
 
     private static final ParticleSystemController CONTROLLER = new ParticleSystemController(id("particles"));
@@ -92,7 +89,7 @@ public class Things implements ModInitializer, EntityComponentInitializer {
         FieldRegistrationHandler.register(ThingsItems.class, MOD_ID, false);
         FieldRegistrationHandler.register(ThingsBlocks.class, MOD_ID, false);
 
-        Registry.register(Registries.ENCHANTMENT, id("retribution"), RETRIBUTION);
+//        Registry.register(Registries.ENCHANTMENT, id("retribution"), RETRIBUTION);
 
         if (CONFIG.generateGleamingOre()) {
             BiomeModifications.addFeature(overworldSelector(), GenerationStep.Feature.UNDERGROUND_ORES, GLEAMING_ORE);
@@ -116,11 +113,21 @@ public class Things implements ModInitializer, EntityComponentInitializer {
         ThingsNetwork.init();
         THINGS_GROUP.initialize();
 
-        if (FabricLoader.getInstance().isModLoaded("fabricshieldlib")) {
-            SHIELD_PREDICATE = SHIELD_PREDICATE.or(item -> item instanceof FabricShield);
-        }
+        var type = new MutableObject<ResourceConditionType<?>>();
+        var codec = MapCodec.unit(() -> new ResourceCondition() {
+            @Override
+            public ResourceConditionType<?> getType() {
+                return type.getValue();
+            }
 
-        ResourceConditions.register(Things.id("agglomeration_enabled"), jsonObject -> CONFIG.enableAgglomeration());
+            @Override
+            public boolean test(@Nullable RegistryWrapper.WrapperLookup registryLookup) {
+                return CONFIG.enableAgglomeration();
+            }
+        });
+
+        type.setValue(ResourceConditionType.create(Things.id("agglomeration_enabled"), codec));
+        ResourceConditions.register(type.getValue());
 
         if (Owo.DEBUG) {
             CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> {
@@ -136,10 +143,6 @@ public class Things implements ModInitializer, EntityComponentInitializer {
 
     public static Predicate<BiomeSelectionContext> overworldSelector() {
         return context -> context.getBiomeRegistryEntry().isIn(BiomeTags.IS_OVERWORLD);
-    }
-
-    public static boolean isShield(Item item) {
-        return SHIELD_PREDICATE.test(item);
     }
 
     public static Set<Item> brokenWatchRecipe() {
@@ -161,7 +164,7 @@ public class Things implements ModInitializer, EntityComponentInitializer {
     }
 
     public static Identifier id(String path) {
-        return new Identifier(MOD_ID, path);
+        return Identifier.of(MOD_ID, path);
     }
 
     @Override

@@ -17,7 +17,6 @@ import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.util.UISounds;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -45,18 +44,18 @@ public class DisplacementTomeScreen extends BaseUIModelHandledScreen<FlowLayout,
     @Override
     @SuppressWarnings("ConstantConditions")
     protected void build(FlowLayout rootComponent) {
-        if (this.handler.getBook() == ItemStack.EMPTY) return;
+        var book = this.handler.getBook();
+        if (book == ItemStack.EMPTY) return;
 
-        var bookNbt = this.handler.getBook().getOrCreateNbt();
         var buttonContainer = rootComponent.childById(FlowLayout.class, "button-container");
         var floatingAnchor = rootComponent.childById(FlowLayout.class, "floating-anchor");
 
-        rootComponent.childById(LabelComponent.class, "charge-label").text(Text.translatable("gui.things.displacement_tome.charges", bookNbt.get(DisplacementTomeItem.FUEL)));
+        rootComponent.childById(LabelComponent.class, "charge-label").text(Text.translatable("gui.things.displacement_tome.charges", book.get(DisplacementTomeItem.FUEL)));
 
         var targets = new HashSet<String>();
 
         var newButton = rootComponent.childById(ButtonComponent.class, "new-button");
-        newButton.active = inventory.containsAny(Set.of(ThingsItems.DISPLACEMENT_PAGE)) && bookNbt.get(DisplacementTomeItem.TARGETS).size() < 8;
+        newButton.active = inventory.containsAny(Set.of(ThingsItems.DISPLACEMENT_PAGE)) && book.get(DisplacementTomeItem.TARGETS).size() < 8;
         if (!newButton.active) newButton.tooltip(Text.translatable("gui.things.displacement_tome.no_pages"));
 
         newButton.onPress((ButtonComponent button) -> {
@@ -79,51 +78,50 @@ public class DisplacementTomeScreen extends BaseUIModelHandledScreen<FlowLayout,
             floatingAnchor.child(floating);
         });
 
-        if (bookNbt.has(DisplacementTomeItem.TARGETS)) {
-            for (var target : bookNbt.get(DisplacementTomeItem.TARGETS).keySet()) {
-                targets.add(target);
+        for (var target : book.get(DisplacementTomeItem.TARGETS).keySet()) {
+            targets.add(target);
 
-                var teleportComponent = this.model.expandTemplate(FlowLayout.class, "teleport-button", Map.of());
-                var teleportButton = teleportComponent.childById(ButtonComponent.class, "teleport-button");
-                var editLabel = teleportComponent.childById(LabelComponent.class, "edit-label");
+            var teleportComponent = this.model.expandTemplate(FlowLayout.class, "teleport-button", Map.of());
+            var teleportButton = teleportComponent.childById(ButtonComponent.class, "teleport-button");
+            var editLabel = teleportComponent.childById(LabelComponent.class, "edit-label");
 
-                teleportButton.setMessage(TextOps.withColor(target, 0x0096FF));
-                buttonContainer.child(teleportComponent);
+            teleportButton.setMessage(TextOps.withColor(target, 0x0096FF));
+            buttonContainer.child(teleportComponent);
 
-                teleportComponent.mouseEnter().subscribe(() -> editLabel.positioning(editLabel.positioning().get().withX(98)));
-                teleportComponent.mouseLeave().subscribe(() -> editLabel.positioning(editLabel.positioning().get().withX(110)));
+            teleportComponent.mouseEnter().subscribe(() -> editLabel.positioning(editLabel.positioning().get().withX(98)));
+            teleportComponent.mouseLeave().subscribe(() -> editLabel.positioning(editLabel.positioning().get().withX(110)));
 
-                editLabel.mouseEnter().subscribe(() -> editLabel.color(Color.ofArgb(0x00D7FF)));
-                editLabel.mouseLeave().subscribe(() -> editLabel.color(Color.ofArgb(0x0096FF)));
-                editLabel.cursorStyle(CursorStyle.HAND);
+            editLabel.mouseEnter().subscribe(() -> editLabel.color(Color.ofArgb(0x00D7FF)));
+            editLabel.mouseLeave().subscribe(() -> editLabel.color(Color.ofArgb(0x0096FF)));
+            editLabel.cursorStyle(CursorStyle.HAND);
 
-                editLabel.mouseDown().subscribe((mouseX, mouseY, button) -> {
-                    UISounds.playInteractionSound();
+            editLabel.mouseDown().subscribe((mouseX, mouseY, button) -> {
+                UISounds.playInteractionSound();
 
-                    if (floatingAnchor.children().size() != 0 && floatingAnchor.positioning().get().y == teleportButton.y()) {
-                        this.clearAnchor(floatingAnchor);
-                        return true;
-                    }
-
-                    var floating = this.model.expandTemplate(FlowLayout.class, "edit-box", Map.of("text", target));
-                    var editBox = floating.childById(TextFieldWidget.class, "text-field");
-
-                    var renameButton = floating.childById(ButtonComponent.class, "rename-button");
-                    renameButton.onPress(b -> this.handler.renamePoint(target + ":" + editBox.getText()));
-                    floating.childById(ButtonComponent.class, "delete-button").onPress(b -> this.handler.deletePoint(target));
-
-                    editBox.setChangedListener(s -> renameButton.active = !s.isBlank() && !targets.contains(s));
-
+                if (floatingAnchor.children().size() != 0 && floatingAnchor.positioning().get().y == teleportButton.y()) {
                     this.clearAnchor(floatingAnchor);
-                    floatingAnchor.positioning(Positioning.absolute(teleportButton.x() + teleportButton.width() + 10, teleportButton.y()));
-                    floatingAnchor.child(floating);
-
                     return true;
-                });
+                }
 
-                teleportButton.onPress((ButtonComponent button) -> this.handler.requestTeleport(target));
-            }
+                var floating = this.model.expandTemplate(FlowLayout.class, "edit-box", Map.of("text", target));
+                var editBox = floating.childById(TextFieldWidget.class, "text-field");
+
+                var renameButton = floating.childById(ButtonComponent.class, "rename-button");
+                renameButton.onPress(b -> this.handler.renamePoint(target + ":" + editBox.getText()));
+                floating.childById(ButtonComponent.class, "delete-button").onPress(b -> this.handler.deletePoint(target));
+
+                editBox.setChangedListener(s -> renameButton.active = !s.isBlank() && !targets.contains(s));
+
+                this.clearAnchor(floatingAnchor);
+                floatingAnchor.positioning(Positioning.absolute(teleportButton.x() + teleportButton.width() + 10, teleportButton.y()));
+                floatingAnchor.child(floating);
+
+                return true;
+            });
+
+            teleportButton.onPress((ButtonComponent button) -> this.handler.requestTeleport(target));
         }
+
     }
 
     private void clearAnchor(FlowLayout layout) {

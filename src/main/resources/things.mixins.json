@@ -11,7 +11,6 @@
     "BrewingStandBlockEntityMixin",
     "BucketItemMixin",
     "ContainerLockMixin",
-    "EnchantmentHelperMixin",
     "EntityMixin",
     "ExplosionBehaviorMixin",
     "ItemUsageContextAccessor",

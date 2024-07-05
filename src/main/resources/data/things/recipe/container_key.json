@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "iib",
+    "nn "
+  ],
+  "key": {
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "b": {
+      "item": "minecraft:iron_block"
+    },
+    "n": {
+      "item": "minecraft:gold_nugget"
+    }
+  },
+  "result": {
+    "id": "things:container_key"
+  }
+}

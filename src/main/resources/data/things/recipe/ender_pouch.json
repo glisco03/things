@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ply",
+    "lel",
+    "ylp"
+  ],
+  "key": {
+    "e": {
+      "item": "minecraft:ender_chest"
+    },
+    "l": {
+      "item": "minecraft:leather"
+    },
+    "p": {
+      "item": "things:gleaming_powder"
+    },
+    "y": {
+      "item": "minecraft:ender_eye"
+    }
+  },
+  "result": {
+    "id": "things:ender_pouch"
+  }
+}

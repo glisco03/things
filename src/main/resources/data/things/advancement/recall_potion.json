@@ -1,0 +1,37 @@
+{
+  "parent": "things:root",
+  "display": {
+    "icon": {
+      "id": "things:recall_potion"
+    },
+    "title": {
+      "translate": "advancement.things.recall_potion.title"
+    },
+    "description": {
+      "translate": "advancement.things.recall_potion.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "recall_potion": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "things:recall_potion"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "recall_potion"
+    ]
+  ]
+}

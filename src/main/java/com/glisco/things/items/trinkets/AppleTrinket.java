@@ -13,11 +13,11 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.RotationAxis;
 
@@ -31,10 +31,10 @@ public class AppleTrinket implements Trinket {
 
         if (!TrinketsApi.getTrinketComponent(player).get().isEquipped(Items.APPLE)) return;
 
-        player.getHungerManager().eat(Items.APPLE, stack);
+        player.getHungerManager().eat(Items.APPLE.getComponents().get(DataComponentTypes.FOOD));
         stack.decrement(1);
 
-        player.playSound(SoundEvents.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, 1, 1);
+        player.playSound(SoundEvents.ENTITY_PLAYER_BURP, 1, 1);
     }
 
     @Environment(EnvType.CLIENT)

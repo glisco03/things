@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "things:gleaming_powder"
+    },
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:glow_ink_sac"
+    }
+  ],
+  "result": {
+    "id": "things:displacement_page",
+    "Count": 1
+  }
+}

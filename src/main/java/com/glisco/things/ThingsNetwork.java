@@ -4,10 +4,8 @@ import com.glisco.things.blocks.PlacedItemBlockEntity;
 import com.glisco.things.blocks.ThingsBlocks;
 import com.glisco.things.client.DisplacementTomeScreen;
 import com.glisco.things.items.ThingsItems;
-import com.glisco.things.items.trinkets.AgglomerationItem;
 import com.glisco.things.items.trinkets.SocksItem;
 import com.glisco.things.misc.DisplacementTomeScreenHandler;
-import dev.emi.trinkets.api.TrinketsApi;
 import io.wispforest.owo.network.OwoNetChannel;
 import io.wispforest.owo.ops.ItemOps;
 import io.wispforest.owo.ops.WorldOps;
@@ -92,14 +90,17 @@ public class ThingsNetwork {
             if (!Things.hasTrinket(player, ThingsItems.SOCKS)) return;
 
             var socks = Things.getTrinkets(player).getEquipped(ThingsItems.SOCKS).get(0).getRight();
-            socks.mutate(SocksItem.JUMP_BOOST_TOGGLE_KEY, enabled -> !enabled);
+            if (!socks.contains(SocksItem.JUMPY_AND_ENABLED)) return;
+
+            socks.set(SocksItem.JUMPY_AND_ENABLED, !socks.get(SocksItem.JUMPY_AND_ENABLED));
 
             WorldOps.playSound(player.getWorld(), player.getPos(), SoundEvents.UI_TOAST_IN, SoundCategory.PLAYERS, 1, 2);
             Things.TOGGLE_JUMP_BOOST_PARTICLES.spawn(player.getWorld(), player.getPos());
         });
 
-        CHANNEL.registerServerbound(AgglomerationItem.ScrollHandStackTrinket.class, AgglomerationItem.ScrollHandStackTrinket::scrollItemStack);
-        CHANNEL.registerServerbound(AgglomerationItem.ScrollStackFromSlotTrinket.class, AgglomerationItem.ScrollStackFromSlotTrinket::scrollItemStack);
+        // TODO more agglomeration networking
+//        CHANNEL.registerServerbound(AgglomerationItem.ScrollHandStackTrinket.class, AgglomerationItem.ScrollHandStackTrinket::scrollItemStack);
+//        CHANNEL.registerServerbound(AgglomerationItem.ScrollStackFromSlotTrinket.class, AgglomerationItem.ScrollStackFromSlotTrinket::scrollItemStack);
     }
 
 

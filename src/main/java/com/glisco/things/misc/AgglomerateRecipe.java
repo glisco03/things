@@ -2,18 +2,17 @@ package com.glisco.things.misc;
 
 import com.glisco.things.Things;
 import com.glisco.things.items.ThingsItems;
-import com.glisco.things.items.trinkets.AgglomerationItem;
 import dev.emi.trinkets.api.SlotType;
 import dev.emi.trinkets.api.TrinketsApi;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.SpecialCraftingRecipe;
 import net.minecraft.recipe.SpecialRecipeSerializer;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
-import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.recipe.input.CraftingRecipeInput;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
@@ -27,33 +26,33 @@ public class AgglomerateRecipe extends SpecialCraftingRecipe {
     }
 
     @Override
-    public boolean matches(RecipeInputInventory inventory, World world) {
+    public boolean matches(CraftingRecipeInput input, World world) {
         int totalItems = 0;
-        for (int i = 0; i < inventory.size(); i++) {
-            if (inventory.getStack(i).isEmpty()) continue;
+        for (int i = 0; i < input.getSize(); i++) {
+            if (input.getStackInSlot(i).isEmpty()) continue;
             totalItems++;
         }
         if (totalItems != 3) return false;
 
-        if (!matchOnce(inventory, stack -> stack.isOf(ThingsItems.EMPTY_AGGLOMERATION))) return false;
+        if (!matchOnce(input, stack -> stack.isOf(ThingsItems.EMPTY_AGGLOMERATION))) return false;
 
-        ItemStack firstStack = matchOne(inventory, AgglomerateRecipe::isValidItem);
+        ItemStack firstStack = matchOne(input, AgglomerateRecipe::isValidItem);
         if (firstStack == null) return false;
 
         var firstValidSlots = new ArrayList<SlotType>();
 
         TrinketsApi.getPlayerSlots().forEach((groupName, slotGroup) -> {
             slotGroup.getSlots().forEach((slotName, slotType) -> {
-                if (firstStack.isIn(TagKey.of(RegistryKeys.ITEM, new Identifier("trinkets", groupName + "/" + slotName)))) {
+                if (firstStack.isIn(TagKey.of(RegistryKeys.ITEM, Identifier.of("trinkets", groupName + "/" + slotName)))) {
                     firstValidSlots.add(slotType);
                 }
             });
         });
 
-        return matchOnce(inventory, stack -> {
+        return matchOnce(input, stack -> {
             boolean anyCompatibleSlot = false;
             for (var slotType : firstValidSlots) {
-                if (stack.isIn(TagKey.of(RegistryKeys.ITEM, new Identifier("trinkets", slotType.getGroup() + "/" + slotType.getName())))) {
+                if (stack.isIn(TagKey.of(RegistryKeys.ITEM, Identifier.of("trinkets", slotType.getGroup() + "/" + slotType.getName())))) {
                     anyCompatibleSlot = true;
                 }
             }
@@ -69,11 +68,13 @@ public class AgglomerateRecipe extends SpecialCraftingRecipe {
     }
 
     @Override
-    public ItemStack craft(RecipeInputInventory inventory, DynamicRegistryManager drm) {
-        ItemStack firstTrinket = matchOne(inventory, stack -> !stack.isEmpty() && !stack.isOf(ThingsItems.EMPTY_AGGLOMERATION));
-        ItemStack secondTrinket = matchOne(inventory, stack -> !stack.isEmpty() && stack != firstTrinket && !stack.isOf(ThingsItems.EMPTY_AGGLOMERATION));
+    public ItemStack craft(CraftingRecipeInput input, RegistryWrapper.WrapperLookup registries) {
+        ItemStack firstTrinket = matchOne(input, stack -> !stack.isEmpty() && !stack.isOf(ThingsItems.EMPTY_AGGLOMERATION));
+        ItemStack secondTrinket = matchOne(input, stack -> !stack.isEmpty() && stack != firstTrinket && !stack.isOf(ThingsItems.EMPTY_AGGLOMERATION));
 
-        return AgglomerationItem.createStack(firstTrinket, secondTrinket);
+        // TODO agglomeration crafting
+//        return AgglomerationItem.createStack(firstTrinket, secondTrinket);
+        return Items.APPLE.getDefaultStack();
     }
 
     @Override
@@ -86,11 +87,11 @@ public class AgglomerateRecipe extends SpecialCraftingRecipe {
         return Serializer.INSTANCE;
     }
 
-    private static boolean matchOnce(RecipeInputInventory inventory, Predicate<ItemStack> condition) {
+    private static boolean matchOnce(CraftingRecipeInput input, Predicate<ItemStack> condition) {
         boolean found = false;
 
-        for (int i = 0; i < inventory.size(); i++) {
-            if (!condition.test(inventory.getStack(i))) continue;
+        for (int i = 0; i < input.getSize(); i++) {
+            if (!condition.test(input.getStackInSlot(i))) continue;
             if (found) return false;
 
             found = true;
@@ -99,9 +100,9 @@ public class AgglomerateRecipe extends SpecialCraftingRecipe {
         return found;
     }
 
-    private static ItemStack matchOne(RecipeInputInventory inventory, Predicate<ItemStack> condition) {
-        for (int i = 0; i < inventory.size(); i++) {
-            ItemStack stack = inventory.getStack(i);
+    private static ItemStack matchOne(CraftingRecipeInput input, Predicate<ItemStack> condition) {
+        for (int i = 0; i < input.getSize(); i++) {
+            ItemStack stack = input.getStackInSlot(i);
 
             if (!condition.test(stack)) continue;
 

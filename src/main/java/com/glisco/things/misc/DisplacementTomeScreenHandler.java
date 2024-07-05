@@ -45,10 +45,10 @@ public class DisplacementTomeScreenHandler extends ScreenHandler {
 
     public void requestTeleport(String location) {
         if (this.player() instanceof ServerPlayerEntity serverPlayer) {
-            int currentFuel = book.getOrCreateNbt().contains("Fuel") ? book.getOrCreateNbt().getInt("Fuel") : 0;
+            int currentFuel = book.get(DisplacementTomeItem.FUEL);
 
             if (currentFuel < Things.CONFIG.displacementTomeFuelConsumption()) {
-                serverPlayer.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1, 0);
+                serverPlayer.playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, 1, 0);
                 return;
             }
 
@@ -56,7 +56,7 @@ public class DisplacementTomeScreenHandler extends ScreenHandler {
             if (!targets.containsKey(location)) return;
 
             currentFuel -= Things.CONFIG.displacementTomeFuelConsumption();
-            book.getOrCreateNbt().putInt("Fuel", currentFuel);
+            book.set(DisplacementTomeItem.FUEL, currentFuel);
 
             targets.get(location).teleportPlayer(serverPlayer);
             serverPlayer.getWorld().playSound(null, serverPlayer.getBlockPos(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.MASTER, 1, 1);

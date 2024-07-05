@@ -1,0 +1,37 @@
+{
+  "parent": "things:gleaming_compound",
+  "display": {
+    "icon": {
+      "id": "things:enchanted_wax_gland"
+    },
+    "title": {
+      "translate": "advancement.things.enchanted_wax_gland.title"
+    },
+    "description": {
+      "translate": "advancement.things.enchanted_wax_gland.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "enchanted_wax_gland": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items":[
+              "things:enchanted_wax_gland"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "enchanted_wax_gland"
+    ]
+  ]
+}

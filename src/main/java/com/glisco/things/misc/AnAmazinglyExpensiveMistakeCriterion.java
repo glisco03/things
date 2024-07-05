@@ -1,9 +1,10 @@
 package com.glisco.things.misc;
 
 import com.mojang.serialization.Codec;
-import io.wispforest.owo.serialization.Endec;
-import io.wispforest.owo.serialization.SerializationAttribute;
-import io.wispforest.owo.serialization.endec.StructEndecBuilder;
+import io.wispforest.endec.SerializationAttributes;
+import io.wispforest.endec.SerializationContext;
+import io.wispforest.endec.impl.StructEndecBuilder;
+import io.wispforest.owo.serialization.CodecUtils;
 import net.minecraft.advancement.criterion.AbstractCriterion;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.entity.LootContextPredicate;
@@ -24,10 +25,10 @@ public class AnAmazinglyExpensiveMistakeCriterion extends AbstractCriterion<AnAm
 
     public static class Conditions implements AbstractCriterion.Conditions {
 
-        public static final Codec<Conditions> CODEC = StructEndecBuilder.of(
-                Endec.ofCodec(EntityPredicate.LOOT_CONTEXT_PREDICATE_CODEC).optionalFieldOf("player", c -> c.playerPredicate, (LootContextPredicate) null),
+        public static final Codec<Conditions> CODEC = CodecUtils.toCodec(StructEndecBuilder.of(
+                CodecUtils.toEndec(EntityPredicate.LOOT_CONTEXT_PREDICATE_CODEC).optionalFieldOf("player", c -> c.playerPredicate, (LootContextPredicate) null),
                 Conditions::new
-        ).codec(SerializationAttribute.HUMAN_READABLE);
+        ), SerializationContext.attributes(SerializationAttributes.HUMAN_READABLE));
 
         private final LootContextPredicate playerPredicate;
 

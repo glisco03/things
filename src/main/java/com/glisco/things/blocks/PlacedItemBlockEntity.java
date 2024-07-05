@@ -1,6 +1,9 @@
 package com.glisco.things.blocks;
 
+import io.wispforest.endec.Endec;
+import io.wispforest.endec.impl.KeyedEndec;
 import io.wispforest.owo.ops.WorldOps;
+import io.wispforest.owo.serialization.endec.MinecraftEndecs;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
@@ -8,11 +11,15 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PlacedItemBlockEntity extends BlockEntity {
+
+    private static final KeyedEndec<ItemStack> ITEM_KEY = MinecraftEndecs.ITEM_STACK.keyed("item", ItemStack.EMPTY);
+    private static final KeyedEndec<Integer> ROTATION_KEY = Endec.INT.keyed("rotation", 0);
 
     private @NotNull ItemStack item = ItemStack.EMPTY;
     private int rotation = 0;
@@ -30,21 +37,18 @@ public class PlacedItemBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void writeNbt(NbtCompound tag) {
-        super.writeNbt(tag);
+    public void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+        super.writeNbt(tag, registries);
 
-        var itemNbt = new NbtCompound();
-        item.writeNbt(itemNbt);
-        tag.put("Item", itemNbt);
-
-        tag.putInt("Rotation", rotation);
+        tag.put(ITEM_KEY, this.item);
+        tag.put(ROTATION_KEY, rotation);
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
-        super.readNbt(tag);
-        if (tag.contains("Item")) item = ItemStack.fromNbt(tag.getCompound("Item"));
-        this.rotation = tag.getInt("Rotation");
+    public void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+        super.readNbt(tag, registries);
+        this.item = tag.get(ITEM_KEY);
+        this.rotation = tag.get(ROTATION_KEY);
     }
 
     @Override
@@ -75,9 +79,9 @@ public class PlacedItemBlockEntity extends BlockEntity {
     }
 
     @Override
-    public NbtCompound toInitialChunkDataNbt() {
+    public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registries) {
         var tag = new NbtCompound();
-        this.writeNbt(tag);
+        this.writeNbt(tag, registries);
         return tag;
     }
 }

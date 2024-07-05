@@ -24,7 +24,7 @@ public class ExplosionBehaviorMixin {
         if (!Things.CONFIG.makeLockedContainersUnbreakable()) return;
 
         if (!(world.getBlockEntity(pos) instanceof LockableContainerBlockEntityAccessor lockable) ||
-                ((ContainerLockAccessor) lockable.things$getLock()).things$getKey().isEmpty()) return;
+                ((ContainerLockAccessor) (Object) lockable.things$getLock()).things$getKey().isEmpty()) return;
 
         cir.setReturnValue(Optional.of(3600000f));
     }

@@ -1,0 +1,37 @@
+{
+  "parent": "things:gleaming_powder",
+  "display": {
+    "icon": {
+      "id": "things:rabbit_foot_charm"
+    },
+    "title": {
+      "translate": "advancement.things.rabbit_foot_charm.title"
+    },
+    "description": {
+      "translate": "advancement.things.rabbit_foot_charm.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "rabbit_foot_charm": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "things:rabbit_foot_charm"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "rabbit_foot_charm"
+    ]
+  ]
+}

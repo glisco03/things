@@ -44,7 +44,7 @@ public class ThingsConfigModel {
 
     public boolean enableRecallPotionRecipe = true;
 
-    public Identifier recallPotionIngredient = new Identifier("ender_pearl");
+    public Identifier recallPotionIngredient = Identifier.of("ender_pearl");
 
     @Comment("How many ender pearls the displacement tome uses per teleport")
     @RangeConstraint(min = 1, max = 128)

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "chp",
+    "hsh",
+    "phc"
+  ],
+  "key": {
+    "h": {
+      "item": "minecraft:honeycomb"
+    },
+    "s": {
+      "item": "minecraft:heart_of_the_sea"
+    },
+    "p": {
+      "item": "minecraft:pufferfish"
+    },
+    "c": {
+      "item": "things:gleaming_compound"
+    }
+  },
+  "result": {
+    "id": "things:enchanted_wax_gland"
+  }
+}

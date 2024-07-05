@@ -1,0 +1,37 @@
+{
+  "parent": "things:root",
+  "display": {
+    "icon": {
+      "id": "things:gleaming_compound"
+    },
+    "title": {
+      "translate": "advancement.things.gleaming_compound.title"
+    },
+    "description": {
+      "translate": "advancement.things.gleaming_compound.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "gleaming_compound": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items":[
+              "things:gleaming_compound"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "gleaming_compound"
+    ]
+  ]
+}

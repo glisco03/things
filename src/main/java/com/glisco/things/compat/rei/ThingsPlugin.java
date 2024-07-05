@@ -13,9 +13,9 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.plugin.common.displays.brewing.DefaultBrewingDisplay;
 import me.shedaniel.rei.plugin.common.displays.crafting.DefaultCraftingDisplay;
 import net.minecraft.block.Blocks;
+import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
 import net.minecraft.recipe.ShapelessRecipe;
 
@@ -35,11 +35,8 @@ public class ThingsPlugin implements REIClientPlugin {
     @Override
     @SuppressWarnings("UnstableApiUsage")
     public void registerDisplays(DisplayRegistry registry) {
-        final var awkwardPotion = new ItemStack(Items.POTION);
-        final var swiftnessPotion = new ItemStack(Items.POTION);
-
-        PotionUtil.setPotion(awkwardPotion, Potions.AWKWARD);
-        PotionUtil.setPotion(swiftnessPotion, Potions.STRONG_SWIFTNESS);
+        final var awkwardPotion = PotionContentsComponent.createStack(Items.POTION, Potions.AWKWARD);
+        final var swiftnessPotion = PotionContentsComponent.createStack(Items.POTION, Potions.STRONG_SWIFTNESS);
 
         registry.add(new DefaultBrewingDisplay(EntryIngredients.of(awkwardPotion),
                 EntryIngredients.of(Items.ENDER_PEARL), EntryStacks.of(ThingsItems.RECALL_POTION)));

@@ -11,17 +11,15 @@ import io.wispforest.owo.ops.TextOps;
 import io.wispforest.owo.registration.annotations.IterationIgnored;
 import io.wispforest.owo.registration.reflect.ItemRegistryContainer;
 import io.wispforest.owo.util.TagInjector;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -65,7 +63,7 @@ public class ThingsItems implements ItemRegistryContainer {
     public void afterFieldProcessing() {
         if (Things.CONFIG.appleTrinket()) {
             TrinketsApi.registerTrinket(Items.APPLE, new AppleTrinket());
-            TagInjector.inject(Registries.ITEM, new Identifier("trinkets", "head/face"), Items.APPLE);
+            TagInjector.inject(Registries.ITEM, Identifier.of("trinkets", "head/face"), Items.APPLE);
         }
 
         BaterWucketItem.registerCauldronBehavior();
@@ -80,7 +78,7 @@ public class ThingsItems implements ItemRegistryContainer {
         }
 
         @Override
-        public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+        public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
             tooltip.add(TextOps.translateWithColor("text.things.crafting_component", TextOps.color(Formatting.GRAY)));
         }
     }

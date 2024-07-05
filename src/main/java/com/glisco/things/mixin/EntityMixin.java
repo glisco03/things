@@ -6,18 +6,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.MovementType;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.ArrayList;
@@ -26,15 +23,14 @@ import java.util.Collections;
 @Mixin(Entity.class)
 public abstract class EntityMixin {
 
-    @Shadow public float stepHeight;
-
     @Shadow
     public abstract Vec3d getPos();
 
     @Shadow
     public abstract boolean isRemoved();
 
-    @Shadow public World world;
+    @Shadow
+    public World world;
 
     @Shadow
     public abstract BlockPos getBlockPos();
@@ -50,25 +46,6 @@ public abstract class EntityMixin {
 
     @Shadow
     public abstract double getZ();
-
-    @Unique private boolean things$stepHeightBoosted = false;
-
-    @Inject(method = "adjustMovementForCollisions(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;", at = @At("HEAD"))
-    private void boostStepHeight(Vec3d movement, CallbackInfoReturnable<Vec3d> cir) {
-        if (!((Object) this instanceof PlayerEntity player)) return;
-        if (!Things.SOCK_DATA.get(player).jumpySocksEquipped) return;
-
-        this.things$stepHeightBoosted = true;
-        this.stepHeight += .45f;
-    }
-
-    @Inject(method = "adjustMovementForCollisions(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;", at = @At("RETURN"))
-    private void resetStepHeight(Vec3d movement, CallbackInfoReturnable<Vec3d> cir) {
-        if (!this.things$stepHeightBoosted) return;
-
-        this.things$stepHeightBoosted = false;
-        this.stepHeight -= .45f;
-    }
 
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Vec3d;lengthSquared()D", ordinal = 1), locals = LocalCapture.CAPTURE_FAILHARD)

@@ -1,0 +1,37 @@
+{
+  "parent": "things:gleaming_powder",
+  "display": {
+    "icon": {
+      "id": "things:ender_pouch"
+    },
+    "title": {
+      "translate": "advancement.things.ender_pouch.title"
+    },
+    "description": {
+      "translate": "advancement.things.ender_pouch.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "ender_pouch": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items":[
+              "things:ender_pouch"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ender_pouch"
+    ]
+  ]
+}
