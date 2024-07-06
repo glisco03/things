@@ -10,8 +10,9 @@ import com.glisco.things.items.trinkets.AppleTrinket;
 import com.glisco.things.items.trinkets.SocksItem;
 import com.glisco.things.mixin.client.access.CreativeSlotAccessor;
 import com.glisco.things.mixin.client.access.HandledScreenAccessor;
-import dev.emi.trinkets.api.client.TrinketRenderer;
-import dev.emi.trinkets.api.client.TrinketRendererRegistry;
+import io.wispforest.accessories.api.client.AccessoriesRendererRegistry;
+import io.wispforest.accessories.api.client.AccessoryRenderer;
+import io.wispforest.accessories.api.components.AccessoriesDataComponents;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -55,7 +56,7 @@ public class ThingsClient implements ClientModInitializer {
         ModelPredicateProviderRegistry.register(ThingsItems.DISPLACEMENT_TOME, Identifier.of("pages"), new DisplacementTomeItem.PredicateProvider());
         ModelPredicateProviderRegistry.register(ThingsItems.SOCKS, Identifier.of("jumpy"), (stack, world, entity, seed) -> stack.contains(SocksItem.JUMPY_AND_ENABLED) ? 1 : 0);
 
-        TrinketRendererRegistry.registerRenderer(Items.APPLE, new AppleTrinket.Renderer());
+        AccessoriesRendererRegistry.registerRenderer(Items.APPLE, AppleTrinket.Renderer::new);
 
         registerRenderedTrinket(ThingsItems.ENCHANTED_WAX_GLAND);
         registerRenderedTrinket(ThingsItems.ENDER_POUCH);
@@ -64,7 +65,14 @@ public class ThingsClient implements ClientModInitializer {
         registerRenderedTrinket(ThingsItems.MONOCLE);
         registerRenderedTrinket(ThingsItems.MOSS_NECKLACE);
         // TODO agglomeration rendering
-//        registerRenderedTrinket(ThingsItems.AGGLOMERATION);
+        registerRenderedTrinket(ThingsItems.AGGLOMERATION);
+        AccessoriesRendererRegistry.registerNoRenderer(ThingsItems.SOCKS);
+        AccessoriesRendererRegistry.registerNoRenderer(ThingsItems.SHOCK_ABSORBER);
+        AccessoriesRendererRegistry.registerNoRenderer(ThingsItems.RABBIT_FOOT_CHARM);
+
+        AccessoriesRendererRegistry.registerNoRenderer(ThingsItems.ARM_EXTENDER);
+        AccessoriesRendererRegistry.registerNoRenderer(ThingsItems.RIOT_GAUNTLET);
+        AccessoriesRendererRegistry.registerNoRenderer(ThingsItems.MINING_GLOVES);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (PLACE_ITEM.wasPressed()) {
@@ -73,44 +81,44 @@ public class ThingsClient implements ClientModInitializer {
             }
 
             while (OPEN_ENDER_CHEST.wasPressed()) {
-                if (!Things.hasTrinket(client.player, ThingsItems.ENDER_POUCH)) return;
+                if (!client.player.accessoriesCapability().isEquipped(ThingsItems.ENDER_POUCH)) return;
                 ThingsNetwork.CHANNEL.clientHandle().send(new ThingsNetwork.OpenEnderChestPacket());
             }
 
             while (TOGGLE_SOCKS_JUMP_BOOST.wasPressed()) {
-                if (!Things.hasTrinket(client.player, ThingsItems.SOCKS)) return;
+                if (!client.player.accessoriesCapability().isEquipped(ThingsItems.SOCKS)) return;
                 ThingsNetwork.CHANNEL.clientHandle().send(new ThingsNetwork.ToggleSocksJumpBoostPacket());
             }
         });
 
         // TODO agglomeration networking
-//        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-//            if (!(screen instanceof HandledScreen) || !Things.CONFIG.enableAgglomerationInvScrollSelection()) return;
-//
-//            ScreenMouseEvents.allowMouseScroll(screen).register((screen1, mouseX, mouseY, horizontalAmount, verticalAmount) -> {
-//                var slot = ((HandledScreenAccessor) screen1).thing$getSlotAt(mouseX, mouseY);
-//
-//                if (slot == null) return true;
-//
-//                var slotStack = slot.getStack();
-//                int slotId = slot.id;
-//
-//                //This is required due to Screen Handler Mismatch for hotbar items with a given Itemgroup open in Creative Mode
-//                boolean fromPlayerInv = screen1 instanceof CreativeInventoryScreen && slot.inventory instanceof PlayerInventory && slot.getIndex() < 9;
-//
-//                if (slot instanceof CreativeSlotAccessor creativeSlot) {
-//                    slotId = creativeSlot.things$getSlot().id;
-//                }
-//
-//                if (slotStack.getItem() instanceof AgglomerationItem && slotStack.has(AgglomerationItem.ITEMS_KEY)) {
-//                    ThingsNetwork.CHANNEL.clientHandle().send(new AgglomerationItem.ScrollStackFromSlotTrinket(fromPlayerInv, fromPlayerInv ? slot.getIndex() : slotId));
-//
-//                    return false;
-//                }
-//
-//                return true;
-//            });
-//        });
+        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            if (!(screen instanceof HandledScreen) || !Things.CONFIG.enableAgglomerationInvScrollSelection()) return;
+
+            ScreenMouseEvents.allowMouseScroll(screen).register((screen1, mouseX, mouseY, horizontalAmount, verticalAmount) -> {
+                var slot = ((HandledScreenAccessor) screen1).thing$getSlotAt(mouseX, mouseY);
+
+                if (slot == null) return true;
+
+                var slotStack = slot.getStack();
+                int slotId = slot.id;
+
+                //This is required due to Screen Handler Mismatch for hotbar items with a given Itemgroup open in Creative Mode
+                boolean fromPlayerInv = screen1 instanceof CreativeInventoryScreen && slot.inventory instanceof PlayerInventory && slot.getIndex() < 9;
+
+                if (slot instanceof CreativeSlotAccessor creativeSlot) {
+                    slotId = creativeSlot.things$getSlot().id;
+                }
+
+                if (slotStack.getItem() instanceof AgglomerationItem && slotStack.contains(AccessoriesDataComponents.NESTED_ACCESSORIES)) {
+                    ThingsNetwork.CHANNEL.clientHandle().send(new AgglomerationItem.ScrollStackFromSlotTrinket(fromPlayerInv, fromPlayerInv ? slot.getIndex() : slotId));
+
+                    return false;
+                }
+
+                return true;
+            });
+        });
     }
 
     private static String keybindId(String name) {
@@ -118,6 +126,6 @@ public class ThingsClient implements ClientModInitializer {
     }
 
     private void registerRenderedTrinket(Item trinket) {
-        TrinketRendererRegistry.registerRenderer(trinket, (TrinketRenderer) trinket);
+        AccessoriesRendererRegistry.registerRenderer(trinket, () -> (AccessoryRenderer) trinket);
     }
 }

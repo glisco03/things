@@ -4,14 +4,16 @@ import com.glisco.things.Things;
 import com.glisco.things.client.SimplePlayerTrinketRenderer;
 import com.glisco.things.client.ThingsClient;
 import com.glisco.things.items.TrinketItemWithOptionalTooltip;
-import dev.emi.trinkets.api.client.TrinketRenderer;
+import io.wispforest.accessories.api.client.AccessoryRenderer;
+import io.wispforest.accessories.api.slot.SlotReference;
 import io.wispforest.owo.itemgroup.OwoItemSettings;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.RotationAxis;
 
@@ -31,8 +33,8 @@ public class EnderPouchItem extends TrinketItemWithOptionalTooltip implements Si
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void align(AbstractClientPlayerEntity player, PlayerEntityModel<AbstractClientPlayerEntity> model, MatrixStack matrices, float headYaw, float headPitch) {
-        TrinketRenderer.translateToChest(matrices, model, player);
+    public <M extends LivingEntity> void align(ItemStack stack, SlotReference reference, BipedEntityModel<M> model, MatrixStack matrices) {
+        AccessoryRenderer.translateToChest(matrices, model, reference.entity());
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180));
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90));
         matrices.scale(.35f, .35f, .35f);

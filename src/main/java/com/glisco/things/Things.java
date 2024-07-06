@@ -2,13 +2,12 @@ package com.glisco.things;
 
 import com.glisco.things.blocks.ThingsBlocks;
 import com.glisco.things.items.ThingsItems;
+import com.glisco.things.items.trinkets.AgglomerationItem;
 import com.glisco.things.misc.*;
 import com.glisco.things.misc.ThingsConfig;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.serialization.MapCodec;
-import dev.emi.trinkets.api.TrinketComponent;
-import dev.emi.trinkets.api.TrinketsApi;
 import io.wispforest.owo.Owo;
 import io.wispforest.owo.itemgroup.Icon;
 import io.wispforest.owo.itemgroup.OwoItemGroup;
@@ -110,6 +109,8 @@ public class Things implements ModInitializer, EntityComponentInitializer {
 
         Criteria.register("things:an_amazingly_expensive_mistake", AN_AMAZINGLY_EXPENSIVE_MISTAKE_CRITERION);
 
+        Registry.register(Registries.DATA_COMPONENT_TYPE, Things.id("agglomeration_selected_stack"), AgglomerationItem.SelectedStackComponent.COMPONENT_TYPE);
+
         ThingsNetwork.init();
         THINGS_GROUP.initialize();
 
@@ -152,15 +153,6 @@ public class Things implements ModInitializer, EntityComponentInitializer {
     public static @Nullable Item recallPotionIngredient() {
         if (!CONFIG.enableRecallPotionRecipe()) return null;
         return Registries.ITEM.getOrEmpty(CONFIG.recallPotionIngredient()).orElse(null);
-    }
-
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
-    public static TrinketComponent getTrinkets(LivingEntity entity) {
-        return TrinketsApi.getTrinketComponent(entity).get();
-    }
-
-    public static boolean hasTrinket(LivingEntity entity, Item trinket) {
-        return getTrinkets(entity).isEquipped(trinket);
     }
 
     public static Identifier id(String path) {
