@@ -42,7 +42,6 @@ public class MonocleItem extends TrinketItemWithOptionalTooltip implements Simpl
     @Environment(EnvType.CLIENT)
     public <M extends LivingEntity> void align(ItemStack stack, SlotReference reference, BipedEntityModel<M> model, MatrixStack matrices) {
         AccessoryRenderer.transformToFace(matrices, model.head, Side.FRONT);
-
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
         matrices.scale(.5f, .5f, .5f);
         matrices.translate(-.5, -.195, -.05f);//.25, ,-.05f

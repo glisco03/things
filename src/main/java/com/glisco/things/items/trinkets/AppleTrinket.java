@@ -4,6 +4,7 @@ import com.glisco.things.Things;
 import com.glisco.things.client.SimplePlayerTrinketRenderer;
 import io.wispforest.accessories.api.Accessory;
 import io.wispforest.accessories.api.client.AccessoryRenderer;
+import io.wispforest.accessories.api.client.Side;
 import io.wispforest.accessories.api.slot.SlotReference;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -49,10 +50,8 @@ public class AppleTrinket implements Accessory {
 
         @Override
         public <M extends LivingEntity> void align(ItemStack stack, SlotReference reference, BipedEntityModel<M> model, MatrixStack matrices) {
-            AccessoryRenderer.translateToFace(matrices, model, reference.entity());
-
-            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180));
-            matrices.translate(0, -.1, -.03);
+            AccessoryRenderer.transformToModelPart(matrices, model.head,0,0,1);
+            matrices.translate(0, 0, .03);
         }
     }
 

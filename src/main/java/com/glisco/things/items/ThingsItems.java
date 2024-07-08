@@ -4,6 +4,7 @@ import com.glisco.things.Things;
 import com.glisco.things.items.generic.*;
 import com.glisco.things.items.trinkets.*;
 import com.glisco.things.mixin.access.ItemAccessor;
+import io.wispforest.accessories.Accessories;
 import io.wispforest.accessories.api.AccessoriesAPI;
 import io.wispforest.lavender.book.LavenderBookItem;
 import io.wispforest.owo.itemgroup.OwoItemSettings;
@@ -63,7 +64,7 @@ public class ThingsItems implements ItemRegistryContainer {
     public void afterFieldProcessing() {
         if (Things.CONFIG.appleTrinket()) {
             AccessoriesAPI.registerAccessory(Items.APPLE, new AppleTrinket());
-            TagInjector.inject(Registries.ITEM, Identifier.of("trinkets", "head/face"), Items.APPLE);
+            TagInjector.inject(Registries.ITEM, Identifier.of(Accessories.MODID, "face"), Items.APPLE);
         }
 
         BaterWucketItem.registerCauldronBehavior();

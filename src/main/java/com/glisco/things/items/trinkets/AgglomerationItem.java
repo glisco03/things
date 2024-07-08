@@ -52,11 +52,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-// TODO agglomeration
 public class AgglomerationItem extends AccessoryItem implements AccessoryNest, AccessoryRenderer {
-
-    public static final KeyedEndec<Byte> SELECTED_TRINKET_KEY = Endec.BYTE.keyed("SelectedTrinket", (byte) 0);
-    public static final KeyedEndec<List<ItemStack>> ITEMS_KEY = MinecraftEndecs.ITEM_STACK.listOf().keyed("Items", ArrayList::new);
 
     public AgglomerationItem() {
         super(new Item.Settings().maxCount(1).rarity(Rarity.UNCOMMON));
@@ -176,33 +172,6 @@ public class AgglomerationItem extends AccessoryItem implements AccessoryNest, A
         }
 
         return super.use(world, user, hand);
-    }
-
-    @Override
-    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
-//        var data = AccessoryNestUtils.getData(stack);
-//
-//        if(data == null) return;
-//
-//        var subStacks = data.accessories();
-//
-//        for (int i = 0; i < subStacks.size(); i++) {
-//            var subTooltip = subStacks.get(i).getTooltip(context,null, type);
-//
-//            for (int j = 0; j < subTooltip.size(); j++) {
-//                if (j == 0) {
-//                    tooltip.add(Text.literal(getSelectedIndex(stack) == i ? "> " : "• ").append(subTooltip.get(j)));
-//                } else {
-//                    tooltip.add(Text.literal("  ").append(subTooltip.get(j)));
-//                }
-//            }
-//        }
-//
-//        for (var subStack : subStacks) {
-//            if (!subStack.isEmpty()) continue;
-//            tooltip.add(Text.empty());
-//            tooltip.add(Text.translatable("item.things.consolation_cake.hint"));
-//        }
     }
 
     //--
