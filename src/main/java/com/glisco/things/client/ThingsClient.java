@@ -64,8 +64,8 @@ public class ThingsClient implements ClientModInitializer {
         registerRenderedTrinket(ThingsItems.LUCK_OF_THE_IRISH);
         registerRenderedTrinket(ThingsItems.MONOCLE);
         registerRenderedTrinket(ThingsItems.MOSS_NECKLACE);
-        // TODO agglomeration rendering
         registerRenderedTrinket(ThingsItems.AGGLOMERATION);
+
         AccessoriesRendererRegistry.registerNoRenderer(ThingsItems.SOCKS);
         AccessoriesRendererRegistry.registerNoRenderer(ThingsItems.SHOCK_ABSORBER);
         AccessoriesRendererRegistry.registerNoRenderer(ThingsItems.RABBIT_FOOT_CHARM);
@@ -74,19 +74,26 @@ public class ThingsClient implements ClientModInitializer {
         AccessoriesRendererRegistry.registerNoRenderer(ThingsItems.RIOT_GAUNTLET);
         AccessoriesRendererRegistry.registerNoRenderer(ThingsItems.MINING_GLOVES);
 
+        AccessoriesRendererRegistry.registerNoRenderer(ThingsItems.BROKEN_WATCH);
+        AccessoriesRendererRegistry.registerNoRenderer(ThingsItems.PLACEBO);
+
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (PLACE_ITEM.wasPressed()) {
-                if (!(client.crosshairTarget instanceof BlockHitResult blockResult)) return;
+                if (!(client.crosshairTarget instanceof BlockHitResult blockResult)) break;
                 ThingsNetwork.CHANNEL.clientHandle().send(new ThingsNetwork.PlaceItemPacket(blockResult));
             }
 
             while (OPEN_ENDER_CHEST.wasPressed()) {
-                if (!client.player.accessoriesCapability().isEquipped(ThingsItems.ENDER_POUCH)) return;
+                var capability = client.player.accessoriesCapability();
+
+                if (capability == null || !capability.isEquipped(ThingsItems.ENDER_POUCH)) break;
                 ThingsNetwork.CHANNEL.clientHandle().send(new ThingsNetwork.OpenEnderChestPacket());
             }
 
             while (TOGGLE_SOCKS_JUMP_BOOST.wasPressed()) {
-                if (!client.player.accessoriesCapability().isEquipped(ThingsItems.SOCKS)) return;
+                var capability = client.player.accessoriesCapability();
+
+                if (capability == null || !capability.isEquipped(ThingsItems.SOCKS)) break;
                 ThingsNetwork.CHANNEL.clientHandle().send(new ThingsNetwork.ToggleSocksJumpBoostPacket());
             }
         });

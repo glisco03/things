@@ -51,9 +51,8 @@ public class MossNecklaceItem extends TrinketItemWithOptionalTooltip implements 
     @Override
     @Environment(EnvType.CLIENT)
     public <M extends LivingEntity> void align(ItemStack stack, SlotReference reference, BipedEntityModel<M> model, MatrixStack matrices) {
-        AccessoryRenderer.translateToChest(matrices, model, reference.entity());
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180));
+        AccessoryRenderer.transformToModelPart(matrices, model.body, 0, 0.7, 1);
         matrices.scale(.5f, .5f, .5f);
-        matrices.translate(0, .45, -.05);
+        matrices.translate(0, 0, 0.025);
     }
 }

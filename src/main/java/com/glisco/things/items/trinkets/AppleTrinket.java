@@ -27,7 +27,9 @@ public class AppleTrinket implements Accessory {
 
         if (player.getHungerManager().getFoodLevel() > 16) return;
 
-        if (!player.accessoriesCapability().isEquipped(Items.APPLE)) return;
+        var capability = player.accessoriesCapability();
+
+        if (capability == null || !capability.isEquipped(Items.APPLE)) return;
 
         player.getHungerManager().eat(Items.APPLE.getComponents().get(DataComponentTypes.FOOD));
         stack.decrement(1);

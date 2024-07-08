@@ -21,8 +21,10 @@ public abstract class PlayerEntityMixin {
 
         if (!stack.getItem().equals(Items.POISONOUS_POTATO)) return;
 
-        PlayerEntity player = (PlayerEntity) (Object) this;
-        if (!player.accessoriesCapability().isEquipped(ThingsItems.LUCK_OF_THE_IRISH)) return;
+        var player = (PlayerEntity) (Object) this;
+        var capability = player.accessoriesCapability();
+
+        if (capability == null || !capability.isEquipped(ThingsItems.LUCK_OF_THE_IRISH)) return;
 
         player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 100, 1));
         player.addStatusEffect(new StatusEffectInstance(StatusEffects.LUCK, 400, 0));

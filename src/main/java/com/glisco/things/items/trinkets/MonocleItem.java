@@ -4,6 +4,7 @@ import com.glisco.things.Things;
 import com.glisco.things.client.SimplePlayerTrinketRenderer;
 import com.glisco.things.items.TrinketItemWithOptionalTooltip;
 import io.wispforest.accessories.api.client.AccessoryRenderer;
+import io.wispforest.accessories.api.client.Side;
 import io.wispforest.accessories.api.slot.SlotReference;
 import io.wispforest.owo.itemgroup.OwoItemSettings;
 import net.fabricmc.api.EnvType;
@@ -40,10 +41,10 @@ public class MonocleItem extends TrinketItemWithOptionalTooltip implements Simpl
     @Override
     @Environment(EnvType.CLIENT)
     public <M extends LivingEntity> void align(ItemStack stack, SlotReference reference, BipedEntityModel<M> model, MatrixStack matrices) {
-        AccessoryRenderer.translateToFace(matrices, model, reference.entity());
+        AccessoryRenderer.transformToFace(matrices, model.head, Side.FRONT);
 
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
         matrices.scale(.5f, .5f, .5f);
-        matrices.translate(.25, -.215, -.05f);
+        matrices.translate(-.5, -.195, -.05f);//.25, ,-.05f
     }
 }

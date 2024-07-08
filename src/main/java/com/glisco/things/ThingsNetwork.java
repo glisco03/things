@@ -34,8 +34,9 @@ public class ThingsNetwork {
     public static void init() {
         CHANNEL.registerServerbound(OpenEnderChestPacket.class, (message, access) -> {
             final var player = access.player();
+            final var capability = player.accessoriesCapability();
 
-            if (!player.accessoriesCapability().isEquipped(ThingsItems.ENDER_POUCH)) {
+            if (capability == null || !capability.isEquipped(ThingsItems.ENDER_POUCH)) {
                 LOGGER.warn("Received illegal openEChest packet");
                 return;
             }
@@ -88,9 +89,10 @@ public class ThingsNetwork {
 
         CHANNEL.registerServerbound(ToggleSocksJumpBoostPacket.class, (message, access) -> {
             var player = access.player();
-            if (!player.accessoriesCapability().isEquipped(ThingsItems.SOCKS)) return;
+            var capability = player.accessoriesCapability();
+            if (capability == null || !capability.isEquipped(ThingsItems.SOCKS)) return;
 
-            var socks = player.accessoriesCapability().getEquipped(ThingsItems.SOCKS).get(0).stack();
+            var socks = capability.getEquipped(ThingsItems.SOCKS).get(0).stack();
             if (!socks.contains(SocksItem.JUMPY_AND_ENABLED)) return;
 
             socks.set(SocksItem.JUMPY_AND_ENABLED, !socks.get(SocksItem.JUMPY_AND_ENABLED));

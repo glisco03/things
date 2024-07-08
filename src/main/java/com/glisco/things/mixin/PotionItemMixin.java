@@ -17,12 +17,13 @@ public abstract class PotionItemMixin {
 
     @Inject(method = "finishUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;incrementStat(Lnet/minecraft/stat/Stat;)V"), cancellable = true)
     public void consume(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> cir) {
-        PlayerEntity playerEntity = (PlayerEntity) user;
+        var player = (PlayerEntity) user;
+        var capability = player.accessoriesCapability();
 
         if (world.random.nextDouble() > 0.75) return;
-        if (!playerEntity.accessoriesCapability().isEquipped(ThingsItems.PLACEBO)) return;
+        if (capability == null || !capability.isEquipped(ThingsItems.PLACEBO)) return;
 
-        playerEntity.incrementStat(Stats.USED.getOrCreateStat((PotionItem) (Object) this));
+        player.incrementStat(Stats.USED.getOrCreateStat((PotionItem) (Object) this));
         cir.setReturnValue(stack);
     }
 

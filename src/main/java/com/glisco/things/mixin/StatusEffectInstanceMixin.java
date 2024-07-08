@@ -19,8 +19,11 @@ public abstract class StatusEffectInstanceMixin implements ExtendedStatusEffectI
 
     @Inject(method = "updateDuration", at = @At("HEAD"), cancellable = true)
     private void skipUpdate(CallbackInfoReturnable<Integer> cir) {
-        if (things$attachedEntity == null || !things$attachedEntity.accessoriesCapability().isEquipped(ThingsItems.BROKEN_WATCH))
-            return;
+        if (things$attachedEntity == null) return;
+
+        var capability = things$attachedEntity.accessoriesCapability();
+
+        if(capability == null || !capability.isEquipped(ThingsItems.BROKEN_WATCH))
 
         if (things$tickNum == 2) {
             cir.setReturnValue(duration);

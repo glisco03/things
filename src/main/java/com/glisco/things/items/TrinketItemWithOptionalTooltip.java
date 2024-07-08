@@ -22,17 +22,11 @@ public abstract class TrinketItemWithOptionalTooltip extends AccessoryItem imple
     }
 
     @Override
-    public void getExtraTooltip(ItemStack stack, List<Text> tooltips) {
+    public void getExtraTooltip(ItemStack stack, List<Text> tooltips, TooltipContext tooltipContext, TooltipType tooltipType) {
         var extraData = new ArrayList<Text>();
 
         tryAppend(extraData);
 
         tooltips.addAll(0, extraData);
     }
-
-//    @Override
-//    @Environment(EnvType.CLIENT)
-//    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
-//        tryAppend(tooltip);
-//    }
 }

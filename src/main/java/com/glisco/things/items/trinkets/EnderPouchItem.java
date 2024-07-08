@@ -34,10 +34,9 @@ public class EnderPouchItem extends TrinketItemWithOptionalTooltip implements Si
     @Override
     @Environment(EnvType.CLIENT)
     public <M extends LivingEntity> void align(ItemStack stack, SlotReference reference, BipedEntityModel<M> model, MatrixStack matrices) {
-        AccessoryRenderer.translateToChest(matrices, model, reference.entity());
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180));
+        AccessoryRenderer.transformToModelPart(matrices, model.body, 1, -0.925, 0);
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90));
         matrices.scale(.35f, .35f, .35f);
-        matrices.translate(-.45, -.8, .725);
+        matrices.translate(0, 0, 0.015);
     }
 }

@@ -162,13 +162,16 @@ public class AgglomerationItem extends AccessoryItem implements AccessoryNest, A
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         var data = AccessoryNestUtils.getData(user.getStackInHand(hand));
-        for (var stack : data.accessories()) {
-            if (stack.isEmpty()) {
-                var cake = new ItemStack(Items.CAKE);
-                cake.set(DataComponentTypes.ITEM_NAME, Text.translatable("item.things.consolation_cake"));
 
-                user.getInventory().offerOrDrop(cake);
-                return TypedActionResult.success(ItemStack.EMPTY);
+        if(data != null) {
+            for (var stack : data.accessories()) {
+                if (stack.isEmpty()) {
+                    var cake = new ItemStack(Items.CAKE);
+                    cake.set(DataComponentTypes.ITEM_NAME, Text.translatable("item.things.consolation_cake"));
+
+                    user.getInventory().offerOrDrop(cake);
+                    return TypedActionResult.success(ItemStack.EMPTY);
+                }
             }
         }
 
@@ -177,27 +180,29 @@ public class AgglomerationItem extends AccessoryItem implements AccessoryNest, A
 
     @Override
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
-        var data = AccessoryNestUtils.getData(stack);
-
-        var subStacks = data.accessories();
-
-        for (int i = 0; i < subStacks.size(); i++) {
-            var subTooltip = subStacks.get(i).getTooltip(context,null, type);
-
-            for (int j = 0; j < subTooltip.size(); j++) {
-                if (j == 0) {
-                    tooltip.add(Text.literal(getSelectedIndex(stack) == i ? "> " : "• ").append(subTooltip.get(j)));
-                } else {
-                    tooltip.add(Text.literal("  ").append(subTooltip.get(j)));
-                }
-            }
-        }
-
-        for (var subStack : subStacks) {
-            if (!subStack.isEmpty()) continue;
-            tooltip.add(Text.empty());
-            tooltip.add(Text.translatable("item.things.consolation_cake.hint"));
-        }
+//        var data = AccessoryNestUtils.getData(stack);
+//
+//        if(data == null) return;
+//
+//        var subStacks = data.accessories();
+//
+//        for (int i = 0; i < subStacks.size(); i++) {
+//            var subTooltip = subStacks.get(i).getTooltip(context,null, type);
+//
+//            for (int j = 0; j < subTooltip.size(); j++) {
+//                if (j == 0) {
+//                    tooltip.add(Text.literal(getSelectedIndex(stack) == i ? "> " : "• ").append(subTooltip.get(j)));
+//                } else {
+//                    tooltip.add(Text.literal("  ").append(subTooltip.get(j)));
+//                }
+//            }
+//        }
+//
+//        for (var subStack : subStacks) {
+//            if (!subStack.isEmpty()) continue;
+//            tooltip.add(Text.empty());
+//            tooltip.add(Text.translatable("item.things.consolation_cake.hint"));
+//        }
     }
 
     //--
@@ -227,7 +232,42 @@ public class AgglomerationItem extends AccessoryItem implements AccessoryNest, A
     }
 
     @Override
-    public void getExtraTooltip(ItemStack stack, List<Text> tooltips) {}
+    public boolean canUnequip(ItemStack stack, SlotReference reference) {
+        if(AccessoryNestUtils.getData(stack) == null) return true;
+
+        return AccessoryNest.super.canUnequip(stack, reference);
+    }
+
+    @Override
+    public void getExtraTooltip(ItemStack stack, List<Text> tooltips, TooltipContext tooltipContext, TooltipType tooltipType) {
+        var data = AccessoryNestUtils.getData(stack);
+
+        if(data == null) return;
+
+        var subStacks = data.accessories();
+
+        var innerTooltipData = new ArrayList<Text>();
+
+        for (int i = 0; i < subStacks.size(); i++) {
+            var subTooltip = subStacks.get(i).getTooltip(tooltipContext,null, tooltipType);
+
+            for (int j = 0; j < subTooltip.size(); j++) {
+                if (j == 0) {
+                    innerTooltipData.add(Text.literal(getSelectedIndex(stack) == i ? "> " : "• ").append(subTooltip.get(j)));
+                } else {
+                    innerTooltipData.add(Text.literal("  ").append(subTooltip.get(j)));
+                }
+            }
+        }
+
+        for (var subStack : subStacks) {
+            if (!subStack.isEmpty()) continue;
+            innerTooltipData.add(Text.empty());
+            innerTooltipData.add(Text.translatable("item.things.consolation_cake.hint"));
+        }
+
+        tooltips.addAll(0, innerTooltipData);
+    }
 
     @Override
     public void onStackChanges(ItemStack holderStack, AccessoryNestContainerContents data, @Nullable LivingEntity livingEntity) {
