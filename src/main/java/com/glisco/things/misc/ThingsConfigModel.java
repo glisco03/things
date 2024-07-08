@@ -1,19 +1,18 @@
 package com.glisco.things.misc;
 
+import blue.endless.jankson.Comment;
 import io.wispforest.owo.config.annotation.*;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.minecraft.util.Identifier;
 
 @Modmenu(modId = "things")
 @Config(name = "things", wrapperName = "ThingsConfig")
 public class ThingsConfigModel {
 
-    @ConfigEntry.Gui.RequiresRestart
+    @RestartRequired
     @Comment("Whether gleaming ore should generate. Unless you plan on making custom recipes, turning this off is a bad idea")
     public boolean generateGleamingOre = true;
 
-    @ConfigEntry.Gui.RequiresRestart
+    @RestartRequired
     @Comment("Disables trinket support for apples")
     public boolean appleTrinket = true;
 
