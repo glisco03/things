@@ -3,7 +3,6 @@
   "values": [
     "things:riot_gauntlet",
     "things:mining_gloves",
-    "things:arm_extender",
-    "things:broken_watch"
+    "things:arm_extender"
   ]
 }
