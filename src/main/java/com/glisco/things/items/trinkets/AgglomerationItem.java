@@ -3,6 +3,8 @@ package com.glisco.things.items.trinkets;
 import com.glisco.things.Things;
 import com.glisco.things.items.ThingsItems;
 import com.glisco.things.mixin.ItemUsageContextAccessor;
+import com.glisco.things.text.AgglomerationTooltipData;
+import com.glisco.things.text.TooltipComponentText;
 import io.wispforest.accessories.Accessories;
 import io.wispforest.accessories.api.AccessoriesAPI;
 import io.wispforest.accessories.api.AccessoryItem;
@@ -218,11 +220,15 @@ public class AgglomerationItem extends AccessoryItem implements AccessoryNest, A
         var innerTooltipData = new ArrayList<Text>();
 
         for (int i = 0; i < subStacks.size(); i++) {
+            var subStack = subStacks.get(i);
+
             var subTooltip = subStacks.get(i).getTooltip(tooltipContext,null, tooltipType);
 
             for (int j = 0; j < subTooltip.size(); j++) {
                 if (j == 0) {
-                    innerTooltipData.add(Text.literal(getSelectedIndex(stack) == i ? "> " : "• ").append(subTooltip.get(j)));
+                    var text = new TooltipComponentText(new AgglomerationTooltipData(Text.literal(getSelectedIndex(stack) == i ? "> " : "• "), subStack, subTooltip.get(j)));
+
+                    innerTooltipData.add(text);
                 } else {
                     innerTooltipData.add(Text.literal("  ").append(subTooltip.get(j)));
                 }

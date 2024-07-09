@@ -22,7 +22,8 @@
     "access.ContainerLockAccessor",
     "access.ForgingScreenHandlerAccessor",
     "access.ItemAccessor",
-    "access.LockableContainerBlockEntityAccessor"
+    "access.LockableContainerBlockEntityAccessor",
+    "TooltipComponentMixin"
   ],
   "client": [
     "client.MouseMixin",

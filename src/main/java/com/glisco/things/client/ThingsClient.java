@@ -10,6 +10,8 @@ import com.glisco.things.items.trinkets.AppleTrinket;
 import com.glisco.things.items.trinkets.SocksItem;
 import com.glisco.things.mixin.client.access.CreativeSlotAccessor;
 import com.glisco.things.mixin.client.access.HandledScreenAccessor;
+import com.glisco.things.text.AgglomerationTooltipComponent;
+import com.glisco.things.text.AgglomerationTooltipData;
 import io.wispforest.accessories.api.client.AccessoriesRendererRegistry;
 import io.wispforest.accessories.api.client.AccessoryRenderer;
 import io.wispforest.accessories.api.components.AccessoriesDataComponents;
@@ -18,6 +20,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
@@ -125,6 +128,10 @@ public class ThingsClient implements ClientModInitializer {
 
                 return true;
             });
+        });
+
+        TooltipComponentCallback.EVENT.register(data -> {
+            return data instanceof AgglomerationTooltipData agglomerationTooltipData ? new AgglomerationTooltipComponent(agglomerationTooltipData) : null;
         });
     }
 
