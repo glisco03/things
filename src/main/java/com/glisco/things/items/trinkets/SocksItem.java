@@ -7,6 +7,7 @@ import com.glisco.things.items.TrinketItemWithOptionalTooltip;
 import com.mojang.serialization.Codec;
 import io.wispforest.accessories.api.attributes.AccessoryAttributeBuilder;
 import io.wispforest.accessories.api.slot.SlotReference;
+import io.wispforest.accessories.api.slot.SlotType;
 import io.wispforest.owo.itemgroup.OwoItemSettings;
 import io.wispforest.owo.ops.TextOps;
 import net.fabricmc.api.EnvType;
@@ -27,6 +28,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SocksItem extends TrinketItemWithOptionalTooltip {
@@ -102,24 +104,28 @@ public class SocksItem extends TrinketItemWithOptionalTooltip {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+    public void getExtraTooltip(ItemStack stack, List<Text> tooltips, TooltipContext tooltipContext, TooltipType tooltipType) {
+        var extraTooltips = new ArrayList<Text>();
+
+        tryAppend(extraTooltips);
+
         if (stack.contains(JUMPY_AND_ENABLED)) {
-            tooltip.add(TextOps.withColor("↑ ", !stack.get(JUMPY_AND_ENABLED) ? TextOps.color(Formatting.GRAY) : 0x34d49c)
+            extraTooltips.add(TextOps.withColor("↑ ", !stack.get(JUMPY_AND_ENABLED) ? TextOps.color(Formatting.GRAY) : 0x34d49c)
                     .append(TextOps.translateWithColor("item.things.socks.jumpy", TextOps.color(Formatting.GRAY))));
         }
 
         int speed = stack.get(SPEED);
         if (speed < 3) {
-            tooltip.add(TextOps.withColor("☄ ", 0x34b1d4)
+            extraTooltips.add(TextOps.withColor("☄ ", 0x34b1d4)
                     .append(TextOps.translateWithColor("item.things.socks.speed_" + speed, TextOps.color(Formatting.GRAY))));
         } else {
-            tooltip.add(TextOps.withColor("☄ ", 0x34b1d4)
+            extraTooltips.add(TextOps.withColor("☄ ", 0x34b1d4)
                     .append(TextOps.translateWithColor("item.things.socks.speed_illegal", TextOps.color(Formatting.RED)))
                     .append(TextOps.withColor(" (" + speed + ")", TextOps.color(Formatting.RED))));
         }
 
-        tooltip.add(Text.literal(" "));
+        extraTooltips.add(Text.literal(" "));
 
-        super.appendTooltip(stack, context, tooltip, type);
+        tooltips.addAll(0, extraTooltips);
     }
 }

@@ -8,9 +8,12 @@ import io.wispforest.accessories.api.client.Side;
 import io.wispforest.accessories.api.slot.SlotReference;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.LivingEntity;
@@ -45,7 +48,25 @@ public class AppleTrinket implements Accessory {
         public <M extends LivingEntity> void render(ItemStack stack, SlotReference reference, MatrixStack matrices, EntityModel<M> model, VertexConsumerProvider multiBufferSource, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if (!Things.CONFIG.renderAppleTrinket()) return;
 
-            SimplePlayerTrinketRenderer.super.render(stack, reference, matrices, model, multiBufferSource, light, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
+            var stackCount = stack.getCount();
+
+            matrices.push();
+
+            for (int i = 0; i < stackCount; i++) {
+                matrices.push();
+
+                align(stack, reference, model, matrices);
+
+                //matrices.translate(0, 0, i * 0.025);
+                matrices.translate(0, 0, i * (1f/16f));
+
+                MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformationMode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, multiBufferSource, reference.entity().getWorld(), 0);
+
+                matrices.pop();
+            }
+
+            matrices.pop();
+
         }
 
         @Override
