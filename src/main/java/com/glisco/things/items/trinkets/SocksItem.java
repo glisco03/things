@@ -63,7 +63,7 @@ public class SocksItem extends TrinketItemWithOptionalTooltip {
     }
 
     @Override
-    public void getModifiers(ItemStack stack, SlotReference reference, AccessoryAttributeBuilder builder) {
+    public void getDynamicModifiers(ItemStack stack, SlotReference reference, AccessoryAttributeBuilder builder) {
         if(!stack.contains(JUMPY_AND_ENABLED)) return;
 
         builder.addExclusive(EntityAttributes.GENERIC_STEP_HEIGHT, new EntityAttributeModifier(Things.id("socks.step_height"), .45, EntityAttributeModifier.Operation.ADD_VALUE));

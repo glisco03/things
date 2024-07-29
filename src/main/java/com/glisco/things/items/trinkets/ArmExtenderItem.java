@@ -15,8 +15,8 @@ public class ArmExtenderItem extends TrinketItemWithOptionalTooltip {
                 .component(
                         AccessoriesDataComponents.ATTRIBUTES,
                         AccessoryItemAttributeModifiers.builder()
-                                .add(EntityAttributes.PLAYER_BLOCK_INTERACTION_RANGE, new EntityAttributeModifier(Things.id("arm_extender"), 2d, EntityAttributeModifier.Operation.ADD_VALUE), "hand", false)
-                                .add(EntityAttributes.PLAYER_ENTITY_INTERACTION_RANGE, new EntityAttributeModifier(Things.id("arm_extender"), 2d, EntityAttributeModifier.Operation.ADD_VALUE), "hand", false)
+                                .addForSlot(EntityAttributes.PLAYER_BLOCK_INTERACTION_RANGE, new EntityAttributeModifier(Things.id("arm_extender"), 2d, EntityAttributeModifier.Operation.ADD_VALUE), "hand", false)
+                                .addForSlot(EntityAttributes.PLAYER_ENTITY_INTERACTION_RANGE, new EntityAttributeModifier(Things.id("arm_extender"), 2d, EntityAttributeModifier.Operation.ADD_VALUE), "hand", false)
                                 .build())
         );
     }
