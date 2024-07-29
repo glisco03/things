@@ -4,6 +4,7 @@ import com.glisco.things.Things;
 import com.glisco.things.items.ThingsItems;
 import com.glisco.things.items.trinkets.AgglomerationItem;
 import io.wispforest.accessories.api.AccessoriesAPI;
+import io.wispforest.accessories.api.AccessoryNest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.RecipeSerializer;
@@ -40,7 +41,7 @@ public class AgglomerateRecipe extends SpecialCraftingRecipe {
         return matchOnce(input, stack -> {
             boolean anyCompatibleSlot = false;
 
-            for (var slotType : AccessoriesAPI.getStackSlotTypes(world, firstStack)) {
+            for (var slotType : AccessoriesAPI.getStackSlotTypes(world, stack)) {
                 if(firstValidSlots.contains(slotType)) {
                     anyCompatibleSlot = true;
 
@@ -53,7 +54,8 @@ public class AgglomerateRecipe extends SpecialCraftingRecipe {
     }
 
     private static boolean isValidItem(ItemStack stack) {
-        return !stack.isEmpty() && !stack.isOf(ThingsItems.EMPTY_AGGLOMERATION) && !stack.isOf(ThingsItems.AGGLOMERATION)
+        return !stack.isEmpty() && !stack.isOf(ThingsItems.EMPTY_AGGLOMERATION)
+                && !(AccessoriesAPI.getAccessory(stack.getItem()) instanceof AccessoryNest)
                 && !stack.isIn(Things.AGGLOMERATION_BLACKLIST);
     }
 
