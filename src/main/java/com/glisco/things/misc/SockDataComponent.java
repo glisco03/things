@@ -8,17 +8,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.ladysnake.cca.api.v3.component.Component;
-import org.ladysnake.cca.api.v3.component.tick.ServerTickingComponent;
 
-public class SockDataComponent implements Component, ServerTickingComponent {
+public class SockDataComponent implements Component {
 
     private final PlayerEntity bearer;
-    private RegistryKey<World> lastWorld = null;
 
     public boolean jumpySocksEquipped = false;
 
@@ -83,20 +79,5 @@ public class SockDataComponent implements Component, ServerTickingComponent {
             list.add(nbt);
         });
         tag.put("SockSpeeds", list);
-    }
-
-    @Override
-    public void serverTick() {
-        final var playerWorld = this.bearer.getWorld().getRegistryKey();
-        if (this.lastWorld == null) {
-            this.lastWorld = playerWorld;
-        } else if (playerWorld != this.lastWorld) {
-            // ugly hack that's needed to get the fov to be normal after
-            // switching worlds without a full player respawn
-            final float lastModifier = this.speedModification;
-            this.setModifier(0);
-            this.setModifier(lastModifier);
-            this.lastWorld = playerWorld;
-        }
     }
 }
