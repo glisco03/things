@@ -101,7 +101,6 @@ public class ThingsNetwork {
             Things.TOGGLE_JUMP_BOOST_PARTICLES.spawn(player.getWorld(), player.getPos());
         });
 
-        // TODO more agglomeration networking
         CHANNEL.registerServerbound(AgglomerationItem.ScrollHandStackTrinket.class, AgglomerationItem.ScrollHandStackTrinket::scrollItemStack);
         CHANNEL.registerServerbound(AgglomerationItem.ScrollStackFromSlotTrinket.class, AgglomerationItem.ScrollStackFromSlotTrinket::scrollItemStack);
     }
