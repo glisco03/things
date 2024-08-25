@@ -3,18 +3,21 @@ package com.glisco.things.mixin;
 import com.glisco.things.Things;
 import com.glisco.things.items.ThingsItems;
 import com.glisco.things.misc.ExtendedStatusEffectInstance;
-import dev.emi.trinkets.api.TrinketsApi;
+import io.wispforest.accessories.pond.AccessoriesAPIAccess;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -23,7 +26,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin extends Entity {
+public abstract class LivingEntityMixin extends Entity implements AccessoriesAPIAccess {
+
+    @Shadow public abstract double getAttributeValue(RegistryEntry<EntityAttribute> attribute);
 
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
@@ -31,7 +36,6 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "takeShieldHit", at = @At("HEAD"))
     public void onShieldHit(LivingEntity attacker, CallbackInfo ci) {
-
         LivingEntity user = (LivingEntity) (Object) this;
 
         if (!user.getActiveItem().isIn(Things.ENCHANTABLE_WITH_RETRIBUTION)) return;
@@ -41,7 +45,6 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "blockedByShield", at = @At("RETURN"))
     public void onShieldBlock(DamageSource source, CallbackInfoReturnable<Boolean> cir) {
-
         if (!cir.getReturnValue()) return;
 
         LivingEntity user = (LivingEntity) (Object) this;
@@ -53,21 +56,19 @@ public abstract class LivingEntityMixin extends Entity {
 
     @ModifyVariable(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;hasStatusEffect(Lnet/minecraft/registry/entry/RegistryEntry;)Z", ordinal = 1), ordinal = 1)
     public float waxGlandWater(float j) {
-        LivingEntity entity = (LivingEntity) (Object) this;
-        if (!(entity instanceof PlayerEntity player)) return j;
+        var capability = this.accessoriesCapability();
 
-        if (!TrinketsApi.getTrinketComponent(player).get().isEquipped(ThingsItems.ENCHANTED_WAX_GLAND)) return j;
+        if (capability == null || !capability.isEquipped(ThingsItems.ENCHANTED_WAX_GLAND)) return j;
 
         return j * Things.CONFIG.waxGlandMultiplier();
     }
 
     @ModifyArg(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;updateVelocity(FLnet/minecraft/util/math/Vec3d;)V"))
     public float waxGlandLava(float speed) {
-        LivingEntity entity = (LivingEntity) (Object) this;
-        if (!(entity instanceof PlayerEntity player)) return speed;
+        var capability = this.accessoriesCapability();
 
-        if (TrinketsApi.getTrinketComponent(player).get().isEquipped(ThingsItems.ENCHANTED_WAX_GLAND) && TrinketsApi.getTrinketComponent(player).get().isEquipped(ThingsItems.HADES_CRYSTAL)) {
-            float depthStrider = (float) (player.getAttributeValue(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY) * 3);
+        if (capability != null && capability.isEquipped(ThingsItems.ENCHANTED_WAX_GLAND) && capability.isEquipped(ThingsItems.HADES_CRYSTAL)) {
+            float depthStrider = (float) (this.getAttributeValue(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY) * 3);
             return 0.0175f * Things.CONFIG.waxGlandMultiplier() + 0.1f * depthStrider;
         }
 
@@ -77,11 +78,13 @@ public abstract class LivingEntityMixin extends Entity {
     @SuppressWarnings("InvalidInjectorMethodSignature")
     @ModifyVariable(method = "handleFallDamage", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/LivingEntity;computeFallDamage(FF)I"))
     private int decreaseFallDamage(int originalFallDamage) {
-        if (Things.getTrinkets((LivingEntity) (Object) this).isEquipped(ThingsItems.SHOCK_ABSORBER)) {
+        var capability = this.accessoriesCapability();
+
+        if (capability != null && capability.isEquipped(ThingsItems.SHOCK_ABSORBER)) {
             return originalFallDamage - (int) Math.min(16, originalFallDamage * 0.20f);
-        } else {
-            return originalFallDamage;
         }
+
+        return originalFallDamage;
     }
 
     @ModifyArg(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"))
@@ -89,11 +92,13 @@ public abstract class LivingEntityMixin extends Entity {
         if (source.getType() != this.getWorld().getDamageSources().flyIntoWall().getType())
             return damage;
 
-        if (Things.getTrinkets((LivingEntity) (Object) this).isEquipped(ThingsItems.SHOCK_ABSORBER)) {
+        var capability = this.accessoriesCapability();
+
+        if (capability != null && capability.isEquipped(ThingsItems.SHOCK_ABSORBER)) {
             return damage / 4;
-        } else {
-            return damage;
         }
+
+        return damage;
     }
 
     @ModifyArg(method = "readCustomDataFromNbt", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"), index = 1)

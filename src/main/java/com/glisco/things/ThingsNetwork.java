@@ -4,6 +4,7 @@ import com.glisco.things.blocks.PlacedItemBlockEntity;
 import com.glisco.things.blocks.ThingsBlocks;
 import com.glisco.things.client.DisplacementTomeScreen;
 import com.glisco.things.items.ThingsItems;
+import com.glisco.things.items.trinkets.AgglomerationItem;
 import com.glisco.things.items.trinkets.SocksItem;
 import com.glisco.things.misc.DisplacementTomeScreenHandler;
 import io.wispforest.owo.network.OwoNetChannel;
@@ -33,8 +34,9 @@ public class ThingsNetwork {
     public static void init() {
         CHANNEL.registerServerbound(OpenEnderChestPacket.class, (message, access) -> {
             final var player = access.player();
+            final var capability = player.accessoriesCapability();
 
-            if (!Things.hasTrinket(player, ThingsItems.ENDER_POUCH)) {
+            if (capability == null || !capability.isEquipped(ThingsItems.ENDER_POUCH)) {
                 LOGGER.warn("Received illegal openEChest packet");
                 return;
             }
@@ -87,9 +89,10 @@ public class ThingsNetwork {
 
         CHANNEL.registerServerbound(ToggleSocksJumpBoostPacket.class, (message, access) -> {
             var player = access.player();
-            if (!Things.hasTrinket(player, ThingsItems.SOCKS)) return;
+            var capability = player.accessoriesCapability();
+            if (capability == null || !capability.isEquipped(ThingsItems.SOCKS)) return;
 
-            var socks = Things.getTrinkets(player).getEquipped(ThingsItems.SOCKS).get(0).getRight();
+            var socks = capability.getEquipped(ThingsItems.SOCKS).get(0).stack();
             if (!socks.contains(SocksItem.JUMPY_AND_ENABLED)) return;
 
             socks.set(SocksItem.JUMPY_AND_ENABLED, !socks.get(SocksItem.JUMPY_AND_ENABLED));
@@ -99,8 +102,8 @@ public class ThingsNetwork {
         });
 
         // TODO more agglomeration networking
-//        CHANNEL.registerServerbound(AgglomerationItem.ScrollHandStackTrinket.class, AgglomerationItem.ScrollHandStackTrinket::scrollItemStack);
-//        CHANNEL.registerServerbound(AgglomerationItem.ScrollStackFromSlotTrinket.class, AgglomerationItem.ScrollStackFromSlotTrinket::scrollItemStack);
+        CHANNEL.registerServerbound(AgglomerationItem.ScrollHandStackTrinket.class, AgglomerationItem.ScrollHandStackTrinket::scrollItemStack);
+        CHANNEL.registerServerbound(AgglomerationItem.ScrollStackFromSlotTrinket.class, AgglomerationItem.ScrollStackFromSlotTrinket::scrollItemStack);
     }
 
 

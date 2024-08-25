@@ -23,7 +23,7 @@
     "access.ForgingScreenHandlerAccessor",
     "access.ItemAccessor",
     "access.LockableContainerBlockEntityAccessor",
-    "trinkets.LivingEntityTrinketComponentMixin"
+    "TooltipComponentMixin"
   ],
   "client": [
     "client.MouseMixin",

@@ -2,8 +2,9 @@ package com.glisco.things.misc;
 
 import com.glisco.things.Things;
 import com.glisco.things.items.ThingsItems;
-import dev.emi.trinkets.api.SlotType;
-import dev.emi.trinkets.api.TrinketsApi;
+import com.glisco.things.items.trinkets.AgglomerationItem;
+import io.wispforest.accessories.api.AccessoriesAPI;
+import io.wispforest.accessories.api.AccessoryNest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.RecipeSerializer;
@@ -11,13 +12,9 @@ import net.minecraft.recipe.SpecialCraftingRecipe;
 import net.minecraft.recipe.SpecialRecipeSerializer;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.recipe.input.CraftingRecipeInput;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
 import java.util.function.Predicate;
 
 public class AgglomerateRecipe extends SpecialCraftingRecipe {
@@ -39,21 +36,16 @@ public class AgglomerateRecipe extends SpecialCraftingRecipe {
         ItemStack firstStack = matchOne(input, AgglomerateRecipe::isValidItem);
         if (firstStack == null) return false;
 
-        var firstValidSlots = new ArrayList<SlotType>();
-
-        TrinketsApi.getPlayerSlots().forEach((groupName, slotGroup) -> {
-            slotGroup.getSlots().forEach((slotName, slotType) -> {
-                if (firstStack.isIn(TagKey.of(RegistryKeys.ITEM, Identifier.of("trinkets", groupName + "/" + slotName)))) {
-                    firstValidSlots.add(slotType);
-                }
-            });
-        });
+        var firstValidSlots = AccessoriesAPI.getStackSlotTypes(world, firstStack);
 
         return matchOnce(input, stack -> {
             boolean anyCompatibleSlot = false;
-            for (var slotType : firstValidSlots) {
-                if (stack.isIn(TagKey.of(RegistryKeys.ITEM, Identifier.of("trinkets", slotType.getGroup() + "/" + slotType.getName())))) {
+
+            for (var slotType : AccessoriesAPI.getStackSlotTypes(world, stack)) {
+                if(firstValidSlots.contains(slotType)) {
                     anyCompatibleSlot = true;
+
+                    break;
                 }
             }
 
@@ -62,8 +54,8 @@ public class AgglomerateRecipe extends SpecialCraftingRecipe {
     }
 
     private static boolean isValidItem(ItemStack stack) {
-        return !stack.isEmpty() && !stack.isOf(ThingsItems.EMPTY_AGGLOMERATION) && !stack.isOf(ThingsItems.AGGLOMERATION)
-                && TrinketsApi.getTrinket(stack.getItem()) != TrinketsApi.getDefaultTrinket()
+        return !stack.isEmpty() && !stack.isOf(ThingsItems.EMPTY_AGGLOMERATION)
+                && !(AccessoriesAPI.getAccessory(stack.getItem()) instanceof AccessoryNest)
                 && !stack.isIn(Things.AGGLOMERATION_BLACKLIST);
     }
 
@@ -72,9 +64,7 @@ public class AgglomerateRecipe extends SpecialCraftingRecipe {
         ItemStack firstTrinket = matchOne(input, stack -> !stack.isEmpty() && !stack.isOf(ThingsItems.EMPTY_AGGLOMERATION));
         ItemStack secondTrinket = matchOne(input, stack -> !stack.isEmpty() && stack != firstTrinket && !stack.isOf(ThingsItems.EMPTY_AGGLOMERATION));
 
-        // TODO agglomeration crafting
-//        return AgglomerationItem.createStack(firstTrinket, secondTrinket);
-        return Items.APPLE.getDefaultStack();
+        return AgglomerationItem.createStack(firstTrinket, secondTrinket);
     }
 
     @Override

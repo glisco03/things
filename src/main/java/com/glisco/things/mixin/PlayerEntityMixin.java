@@ -1,7 +1,6 @@
 package com.glisco.things.mixin;
 
 import com.glisco.things.items.ThingsItems;
-import dev.emi.trinkets.api.TrinketsApi;
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -15,15 +14,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerEntity.class)
-public class PlayerEntityMixin {
+public abstract class PlayerEntityMixin {
 
     @Inject(method = "eatFood", at = @At("TAIL"))
     public void onConsume(World world, ItemStack stack, FoodComponent foodComponent, CallbackInfoReturnable<ItemStack> cir) {
 
         if (!stack.getItem().equals(Items.POISONOUS_POTATO)) return;
 
-        PlayerEntity player = (PlayerEntity) (Object) this;
-        if (!TrinketsApi.getTrinketComponent(player).get().isEquipped(ThingsItems.LUCK_OF_THE_IRISH)) return;
+        var player = (PlayerEntity) (Object) this;
+        var capability = player.accessoriesCapability();
+
+        if (capability == null || !capability.isEquipped(ThingsItems.LUCK_OF_THE_IRISH)) return;
 
         player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 100, 1));
         player.addStatusEffect(new StatusEffectInstance(StatusEffects.LUCK, 400, 0));

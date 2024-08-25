@@ -3,13 +3,12 @@ package com.glisco.things.items.trinkets;
 import com.glisco.things.Things;
 import com.glisco.things.client.SimplePlayerTrinketRenderer;
 import com.glisco.things.items.TrinketItemWithOptionalTooltip;
-import dev.emi.trinkets.api.SlotReference;
-import dev.emi.trinkets.api.client.TrinketRenderer;
+import io.wispforest.accessories.api.client.AccessoryRenderer;
+import io.wispforest.accessories.api.slot.SlotReference;
 import io.wispforest.owo.itemgroup.OwoItemSettings;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -26,8 +25,8 @@ public class MossNecklaceItem extends TrinketItemWithOptionalTooltip implements 
     }
 
     @Override
-    public void tick(ItemStack stack, SlotReference slot, LivingEntity entity) {
-        if (!(entity instanceof ServerPlayerEntity player)) return;
+    public void tick(ItemStack stack, SlotReference reference) {
+        if (!(reference.entity() instanceof ServerPlayerEntity player)) return;
 
         int daytime = (int) player.getWorld().getTimeOfDay() % 24000;
         if (player.getWorld().getLightLevel(LightType.BLOCK, player.getBlockPos()) > 7 ||
@@ -42,8 +41,8 @@ public class MossNecklaceItem extends TrinketItemWithOptionalTooltip implements 
     }
 
     @Override
-    public void onUnequip(ItemStack stack, SlotReference slot, LivingEntity entity) {
-        if (!(entity instanceof ServerPlayerEntity player)) return;
+    public void onUnequip(ItemStack stack, SlotReference reference) {
+        if (!(reference.entity() instanceof ServerPlayerEntity player)) return;
 
         if (player.hasStatusEffect(StatusEffects.REGENERATION))
             player.removeStatusEffect(StatusEffects.REGENERATION);
@@ -51,10 +50,9 @@ public class MossNecklaceItem extends TrinketItemWithOptionalTooltip implements 
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void align(AbstractClientPlayerEntity player, PlayerEntityModel<AbstractClientPlayerEntity> model, MatrixStack matrices, float headYaw, float headPitch) {
-        TrinketRenderer.translateToChest(matrices, model, player);
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180));
+    public <M extends LivingEntity> void align(ItemStack stack, SlotReference reference, BipedEntityModel<M> model, MatrixStack matrices) {
+        AccessoryRenderer.transformToModelPart(matrices, model.body, 0, 0.7, 1);
         matrices.scale(.5f, .5f, .5f);
-        matrices.translate(0, .45, -.05);
+        matrices.translate(0, 0, 0.025);
     }
 }
