@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "type": "jeed:effect_provider",
+  "effect": "minecraft:jump_boost",
+  "providers": [
+    {
+	  "item": "things:rabbit_foot_charm"
+    },
+	{
+	  "item": "things:socks"
+    }
+  ],
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "jeed"
+      ]
+    }
+  ]
+}

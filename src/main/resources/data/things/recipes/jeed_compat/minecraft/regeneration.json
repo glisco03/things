@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "type": "jeed:effect_provider",
+  "effect": "minecraft:regeneration",
+  "providers": [
+    {
+		"item": "things:moss_necklace"
+	},
+	{
+		"item": "things:luck_of_the_irish"
+	}
+  ],
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "jeed"
+      ]
+    }
+  ]
+}

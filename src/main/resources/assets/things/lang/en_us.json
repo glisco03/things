@@ -35,17 +35,17 @@
   ],
   "item.things.displacement_page": "Displacement Page",
   "item.things.mining_gloves": "Mining Glove",
-  "item.things.mining_gloves.tooltip": "Grants permanent Haste II",
+  "item.things.mining_gloves.tooltip": "Grants Momentum II while equipped",
   "item.things.riot_gauntlet": "Riot Gauntlet",
-  "item.things.riot_gauntlet.tooltip": "Grants permanent Strength",
+  "item.things.riot_gauntlet.tooltip": "Grants Strength while equipped",
   "item.things.infernal_scepter": "Infernal Scepter",
-  "item.things.infernal_scepter.tooltip": "Shoots fireballs, uses Fire Charges as ammunition",
+  "item.things.infernal_scepter.tooltip": "Shoots fireballs, using Fire Charges as ammunition",
   "item.things.gleaming_powder": "Gleaming Powder",
   "item.things.gleaming_compound": "Gleaming Compound",
   "item.things.hades_crystal": "Hades Crystal",
-  "item.things.hades_crystal.tooltip": "Grants permanent Fire Resistance. Wear together with a §fWax Gland §7for extra awesomeness",
+  "item.things.hades_crystal.tooltip": "Grants Fire Resistance while equipped. Wear together with a §fWax Gland §7for extra awesomeness!",
   "item.things.enchanted_wax_gland": "Enchanted Wax Gland",
-  "item.things.enchanted_wax_gland.tooltip": "Makes you float in water. And apparently also really fast",
+  "item.things.enchanted_wax_gland.tooltip": "Makes you float in water. Apparently also makes you swim really fast",
   "item.things.item_magnet": "Item Magnet",
   "item.things.item_magnet.tooltip": [
     {"text": "⚡ ", "color": "#8000ff"},
@@ -60,9 +60,9 @@
     {"text": "❤", "color": "#EB1D36"}
   ],
   "item.things.rabbit_foot_charm": "Rabbit Foot Charm",
-  "item.things.rabbit_foot_charm.tooltip": "Grants permanent Jump Boost II",
+  "item.things.rabbit_foot_charm.tooltip": "Grants Jump Boost II while equipped",
   "item.things.luck_of_the_irish": "Luck of the Irish",
-  "item.things.luck_of_the_irish.tooltip": "Kinda turns Poisonous Potatoes into Golden Apples",
+  "item.things.luck_of_the_irish.tooltip": "Kinda makes Poisonous Potatoes taste like Golden Apples",
   "item.things.socks": "Socks",
   "item.things.socks.tooltip": [
     "Provides increased walking speed and optionally Jump Boost including step-assist. Press ",
@@ -85,6 +85,8 @@
   "item.things.empty_agglomeration.tooltip": "Combine with two trinkets which share at least one slot to agglomerate them",
 
   "effect.things.momentum": "Momentum",
+  "effect.things.momentum.description": "Increases mining speed. Stacks with Haste.",
+  "effect.things.momentum.desc": "Increases mining speed. Stacks with Haste.",
 
   "enchantment.things.retribution": "Retribution",
   "enchantment.things.retribution.desc": "Rewards the user with strength upon blocking an attack with their enchanted shield",
