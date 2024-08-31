@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "type": "jeed:effect_provider",
+  "effect": "minecraft:strength",
+  "providers": [
+    {
+		"item": "things:riot_gauntlet"
+	}
+  ],
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "jeed"
+      ]
+    }
+  ]
+}

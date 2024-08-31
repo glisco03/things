@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "type": "jeed:effect_provider",
+  "effect": "minecraft:saturation",
+  "providers": [
+    {
+		"item": "things:luck_of_the_irish"
+	}
+  ],
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "jeed"
+      ]
+    }
+  ]
+}

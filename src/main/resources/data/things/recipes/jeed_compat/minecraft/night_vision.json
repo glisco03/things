@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "type": "jeed:effect_provider",
+  "effect": "minecraft:night_vision",
+  "providers": [
+    {
+		"item": "things:monocle"
+	}
+  ],
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "jeed"
+      ]
+    }
+  ]
+}
