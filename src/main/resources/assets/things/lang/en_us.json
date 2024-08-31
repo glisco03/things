@@ -85,8 +85,8 @@
   "item.things.empty_agglomeration.tooltip": "Combine with two trinkets which share at least one slot to agglomerate them",
 
   "effect.things.momentum": "Momentum",
-  "effect.things.momentum.description": "Increases mining speed.",
-  "effect.things.momentum.desc": "Increases mining speed.",
+  "effect.things.momentum.description": "Increases mining speed. Stacks with Haste.",
+  "effect.things.momentum.desc": "Increases mining speed. Stacks with Haste.",
 
   "enchantment.things.retribution": "Retribution",
   "enchantment.things.retribution.desc": "Rewards the user with strength upon blocking an attack with their enchanted shield",
