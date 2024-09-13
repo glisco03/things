@@ -1,8 +1,10 @@
 package com.glisco.things.blocks;
 
 import io.wispforest.endec.Endec;
+import io.wispforest.endec.SerializationContext;
 import io.wispforest.endec.impl.KeyedEndec;
 import io.wispforest.owo.ops.WorldOps;
+import io.wispforest.owo.serialization.RegistriesAttribute;
 import io.wispforest.owo.serialization.endec.MinecraftEndecs;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -11,6 +13,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
@@ -40,15 +43,20 @@ public class PlacedItemBlockEntity extends BlockEntity {
     public void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
         super.writeNbt(tag, registries);
 
-        tag.put(ITEM_KEY, this.item);
-        tag.put(ROTATION_KEY, rotation);
+        var ctx = SerializationContext.attributes(RegistriesAttribute.of((DynamicRegistryManager) registries));
+
+        tag.put(ctx, ITEM_KEY, this.item);
+        tag.put(ctx, ROTATION_KEY, rotation);
     }
 
     @Override
     public void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
         super.readNbt(tag, registries);
-        this.item = tag.get(ITEM_KEY);
-        this.rotation = tag.get(ROTATION_KEY);
+
+        var ctx = SerializationContext.attributes(RegistriesAttribute.of((DynamicRegistryManager) registries));
+
+        this.item = tag.get(ctx, ITEM_KEY);
+        this.rotation = tag.get(ctx, ROTATION_KEY);
     }
 
     @Override
