@@ -5,15 +5,15 @@
   "block.things.stone_glowstone_fixture": "石制荧石灯具",
   "block.things.quartz_glowstone_fixture": "石英制荧石灯具",
   "block.things.deepslate_glowstone_fixture": "深板岩制荧石灯具",
-  "block.things.gleaming_ore": "璀璨矿",
-  "block.things.deepslate_gleaming_ore": "深层璀璨矿",
+  "block.things.gleaming_ore": "璀璨矿石",
+  "block.things.deepslate_gleaming_ore": "深层璀璨矿石",
   "block.things.diamond_pressure_plate": "钻石压力板",
 
   "item.things.hardening_catalyst": "硬化催化剂",
   "item.things.hardening_catalyst.tooltip": "在铁砧中敲给任意物品让它坚不可摧",
   "item.things.recall_potion": "回忆药水",
   "item.things.container_key": "容器钥匙",
-  "item.things.container_key.tooltip": "潜行右键容器以上锁/解锁。可以打开用它上锁的容器",
+  "item.things.container_key.tooltip": "潜行右键容器以上锁/解锁。可以打开用它锁上的容器",
   "item.things.bater_wucket": "木涌",
   "item.things.bempty_ucket": "椌甬",
   "item.things.ender_pouch": "末影袋",
@@ -25,7 +25,7 @@
   "item.things.monocle": "单片眼镜",
   "item.things.monocle.tooltip": "获得永久夜视",
   "item.things.moss_necklace": "苔藓项链",
-  "item.things.moss_necklace.tooltip": "处于光照下时获得抗性提升II",
+  "item.things.moss_necklace.tooltip": "处于光照下时获得生命恢复II",
   "item.things.placebo": "安慰剂",
   "item.things.placebo.tooltip": "25%概率不消耗喝下的药水",
   "item.things.displacement_tome": "位移魔典",
@@ -88,7 +88,7 @@
   "effect.things.momentum": "动量",
 
   "enchantment.things.retribution": "报应",
-  "enchantment.things.retribution.desc": "赐予用此附魔过的盾阻挡攻击的人力量",
+  "enchantment.things.retribution.desc": "使用附魔此魔咒的盾牌格挡后获得力量",
 
   "container.enderpouch": "末影袋",
   "itemGroup.things.things": "杂七杂八的东西",
@@ -180,8 +180,8 @@
   "advancement.things.eat_agglomerated_apple.title": "咔吱一口",
   "advancement.things.eat_agglomerated_apple.description": "它给你营养，现在它坏了",
 
-  "text.autoconfig.things.title": "『杂七杂八的东西』设置",
-  "text.config.things.option.generateGleamingOre": "生成璀璨矿",
+  "text.config.things.title": "『杂七杂八的东西』设置",
+  "text.config.things.option.generateGleamingOre": "璀璨矿石发光",
   "text.config.things.option.appleTrinket": "苹果饰品",
   "text.config.things.option.waxGlandMultiplier": "附魔蜡腺速度倍率",
   "text.config.things.option.infernalScepterDurability": "烈焰魔杖最大耐久",
@@ -199,6 +199,6 @@
 
   "text.config.things.category.effectLevels": "饰品状态效果等级",
   "text.config.things.option.effectLevels.miningGloveMomentum": "挖矿手套的动能效果等级",
-  "text.config.things.option.effectLevels.mossNecklaceRegen": "苔藓项链的抗性提升效果等级",
+  "text.config.things.option.effectLevels.mossNecklaceRegen": "苔藓项链的生命恢复效果等级",
   "text.config.things.option.effectLevels.riotGauntletStrength": "狂暴臂铠的力量效果等级"
 }
