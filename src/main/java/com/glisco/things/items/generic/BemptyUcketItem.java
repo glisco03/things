@@ -37,11 +37,11 @@ public class BemptyUcketItem extends BucketItem {
 
     public static void registerCauldronBehavior() {
         CauldronBehavior.WATER_CAULDRON_BEHAVIOR.map().put(ThingsItems.BEMPTY_UCKET, (state, world, pos, player, hand, stack) -> {
-            return CauldronBehavior.emptyCauldron(state, world, pos, player, hand, stack, stack, blockState -> blockState.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL);
+            return CauldronBehavior.emptyCauldron(state, world, pos, player, hand, stack, stack.copy(), blockState -> blockState.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL);
         });
 
         CauldronBehavior.LAVA_CAULDRON_BEHAVIOR.map().put(ThingsItems.BEMPTY_UCKET, (state, world, pos, player, hand, stack) -> {
-            return CauldronBehavior.emptyCauldron(state, world, pos, player, hand, stack, stack, blockState -> true, SoundEvents.ITEM_BUCKET_FILL_LAVA);
+            return CauldronBehavior.emptyCauldron(state, world, pos, player, hand, stack, stack.copy(), blockState -> true, SoundEvents.ITEM_BUCKET_FILL_LAVA);
         });
     }
 
